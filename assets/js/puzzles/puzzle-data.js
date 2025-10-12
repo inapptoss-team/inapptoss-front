@@ -9,10 +9,11 @@ export const puzzles = {
     },
     'cabinet-puzzle': {
         title: '캐비넷 퍼즐',
-        question: '캐비넷의 비밀번호는 무엇일까요? (4자리 숫자)',
-        answer: '1234',
+        question: '올바른 원소를 선택하여 캐비넷을 열어주세요.',
+        answer: 'cabinet-lock',
+        correctAnswer: 'Ga',
         successMessage: '캐비넷이 열렸습니다! 새로운 아이템을 발견했습니다.',
-        nextScene: 'materials-found'
+        nextScene: 'show-paper'
     },
     'materials-puzzle': {
         title: '재료 퍼즐',
@@ -33,14 +34,22 @@ export const puzzles = {
         successMessage: '컴퓨터에 접속했습니다! 중요한 정보를 발견했습니다.',
         nextScene: 'computer-unlocked'
     },
-    'mirror-clue': {
-        title: '거울',
-        question: '낡은 거울이다. 특별한 것은 보이지 않는다.',
+    'mirror-puzzle': {
+        title: '거울 퍼즐',
+        question: '각 원소의 원자번호를 순서대로 입력하세요.',
+        answer: 'mirror-code',
+        correctAnswer: '3214',
+        successMessage: '거울 속의 비밀을 풀었습니다!',
+        nextScene: 'mirror-unlocked'
+    },
+    'storage-clue': {
+        title: '창고',
+        question: '▶ Ga (갈륨)을 얻었다.<br>▶ Hg (수은)을 얻었다.<br>▶ K (칼륨)을 얻었다.<br>▶ Li (리튬)을 얻었다.<br>▶ C₂H₅OH (에탄올)을 얻었다.',
         answer: 'clue'
     },
-    'tool-storage-clue': {
-        title: '도구 보관함',
-        question: '다양한 실험 도구들이 있지만, 지금 당장 필요한 것은 없어 보인다.',
+    'paper-clue': {
+        title: '거꾸로 쓰인 종이',
+        question: '<p style="font-size: 1.1rem; color: #a6d8ff; text-align: center; margin-bottom: 1rem;">거울에 비춰보면 뭔가 보일지도...</p><img src="../img/종이.png" alt="거꾸로 쓰인 종이" style="max-width: 100%; height: auto; display: block; margin: 0 auto;">',
         answer: 'clue'
     }
 };

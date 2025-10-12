@@ -1,7 +1,8 @@
 import { handleDesk } from './desk.js';
 import { handleMirror } from './mirror.js';
-import { handleToolStorage } from './toolStorage.js';
 import { handleStorage } from './storage.js';
+import { handleCabinet } from './cabinet.js';
+import { handlePaper } from './paper.js';
 
 document.addEventListener('DOMContentLoaded', () => {
     const puzzleModal = document.getElementById('puzzleModal');
@@ -27,6 +28,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     setupInteraction('.map-desk', handleDesk);
     setupInteraction('.map-mirror', handleMirror);
-    setupInteraction('.map-tool-storage', handleToolStorage);
     setupInteraction('.map-storage', handleStorage);
+    setupInteraction('.map-cabinet', handleCabinet);
+    setupInteraction('.map-paper', handlePaper);
 });
