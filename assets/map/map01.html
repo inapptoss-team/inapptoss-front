@@ -1,1 +1,57 @@
 <!-- 게임 맵(1) -->
+<!doctype html>
+<html lang="ko">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Map 01 - THE GRADUATE ESCAPE</title>
+    <link rel="stylesheet" href="../css/index.css">
+</head>
+<body>
+    <main class="poster">
+        <div class="scene">
+            <header class="game-header">
+                <button class="btn main-btn" onclick="window.location.href='../../index.html'">메인으로</button>
+            </header>
+            <div class="map-container">
+                <div class="map-content">
+                    <img src="../img/실험실.png" alt="실험실 이미지" class="lab-image">
+                    
+                    <!-- 상호작용 가능한 영역들 -->
+                    <div class="interactive-areas">
+                        <!-- 책상 -->
+                        <div class="interactive-btn map-desk" data-object="책상" data-puzzle="chair-puzzle"></div>
+                        
+                        <!-- 다른 상호작용 가능한 객체들 -->
+                        <div class="interactive-btn map-mirror" data-object="거울" data-puzzle="mirror-clue"></div>
+                        <div class="interactive-btn map-tool-storage" data-object="도구 보관함" data-puzzle="tool-storage-clue"></div>
+                        <div class="interactive-btn map-storage" data-object="창고" data-puzzle="cabinet-puzzle"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 퍼즐 모달 -->
+            <div class="puzzle-modal" id="puzzleModal">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h2 class="modal-title" id="modalTitle">퍼즐</h2>
+                    <button class="close-btn" id="closeModal">&times;</button>
+                  </div>
+                  <div class="modal-body">
+                    <div class="puzzle-content" id="puzzleContent">
+                      <!-- 퍼즐 내용이 여기에 동적으로 로드됩니다 -->
+                    </div>
+                    <div class="puzzle-actions">
+                      <input type="text" class="puzzle-input" id="puzzleInput" placeholder="답을 입력하세요">
+                      <button class="submit-btn" id="submitAnswer">제출</button>
+                    </div>
+                    
+                  </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    <script type="module" src="../js/main.js"></script>
+    <script type="module" src="../js/map/interactions.js"></script>
+</body>
+</html>
