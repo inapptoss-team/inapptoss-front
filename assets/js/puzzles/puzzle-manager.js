@@ -58,6 +58,10 @@ class PuzzleManager {
              this.puzzleInput.style.display = 'none';
              this.submitBtn.style.display = 'none';
              this.loadHtmlPuzzle('../puzzles/puzzle02.html', '.cabinet-puzzle-container', objectName, this.initCabinetPuzzle.bind(this));
+        } else if (puzzle.answer === 'mirror-code') {
+             this.puzzleInput.style.display = 'none';
+             this.submitBtn.style.display = 'none';
+             this.loadHtmlPuzzle('../puzzles/puzzle03.html', '.mirror-puzzle-container', objectName, this.initMirrorPuzzle.bind(this));
         } else {
             this.puzzleContent.innerHTML = `
                 <p><strong>${objectName}을(를) 조사했습니다.</strong></p>
@@ -104,7 +108,14 @@ class PuzzleManager {
     
     handleNextScene(sceneType) {
         console.log(`다음 장면: ${sceneType}`);
-        // This is where you would implement scene transition logic, e.g., showing/hiding elements.
+        
+        if (sceneType === 'show-paper') {
+            // 종이 오브젝트 표시
+            const paperElement = document.querySelector('.map-paper');
+            if (paperElement) {
+                paperElement.style.display = 'block';
+            }
+        }
     }
 
     loadHtmlPuzzle(url, selector, objectName, callback) {
@@ -372,7 +383,7 @@ class PuzzleManager {
                     
                     elementChoices.style.display = 'none';
                     
-                    feedback.textContent = '🎉 정답입니다! 캐비넷이 열렸습니다.';
+                    feedback.textContent = '🎉 정답입니다!';
                     feedback.className = 'puzzle-feedback success';
                     
                     setTimeout(() => {
@@ -403,6 +414,70 @@ class PuzzleManager {
                 }
             });
         });
+    }
+
+    initMirrorPuzzle() {
+        const feedback = document.getElementById('puzzleFeedback');
+        const codeInput = document.getElementById('mirrorCodeInput');
+        const confirmBtn = document.getElementById('confirmMirrorPuzzle');
+        
+        if (!feedback || !codeInput || !confirmBtn) {
+            console.error("Mirror puzzle elements not found");
+            return;
+        }
+
+        const puzzle = puzzles['mirror-puzzle'];
+        let isAnswered = false;
+
+        codeInput.addEventListener('input', (e) => {
+            e.target.value = e.target.value.replace(/[^0-9]/g, '');
+        });
+
+        codeInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' && codeInput.value.length === 4) {
+                confirmBtn.click();
+            }
+        });
+
+        confirmBtn.addEventListener('click', () => {
+            if (isAnswered) return;
+            
+            const userAnswer = codeInput.value.trim();
+            
+            if (userAnswer.length !== 4) {
+                // 입력 필드에 shake 효과
+                codeInput.classList.add('wrong');
+                setTimeout(() => {
+                    codeInput.classList.remove('wrong');
+                }, 500);
+                return;
+            }
+            
+            if (userAnswer === puzzle.correctAnswer) {
+                isAnswered = true;
+                feedback.textContent = '🎉 정답입니다!';
+                feedback.className = 'puzzle-feedback success';
+                codeInput.disabled = true;
+                
+                setTimeout(() => {
+                    this.hide();
+                    if (puzzle.nextScene) {
+                        this.handleNextScene(puzzle.nextScene);
+                    }
+                }, 1500);
+            } else {
+                // 오답 - shake 애니메이션만
+                codeInput.classList.add('wrong');
+                codeInput.value = '';
+                codeInput.focus();
+                
+                setTimeout(() => {
+                    codeInput.classList.remove('wrong');
+                }, 500);
+            }
+        });
+
+        codeInput.focus();
     }
 }
 

@@ -381,6 +381,11 @@ body{
   background-color: rgba(0, 0, 255, 0.4); border: 2px solid #0000ff;
 }
 
+.map-paper {
+  top: 40%; left: 20%; width: 8%; height: 12%;
+  background-color: rgba(255, 255, 255, 0.6); border: 2px solid #ffffff;
+}
+
 
 /* Puzzle Styles */
 .puzzle-modal{
@@ -722,5 +727,101 @@ body{
   0%, 100% { transform: translateX(0); }
   25% { transform: translateX(-5px); }
   75% { transform: translateX(5px); }
+}
+
+/* Mirror Puzzle Styles */
+.mirror-puzzle-container {
+  width: 340px;
+  padding: 20px;
+  background-color: #1a2a47;
+  border-radius: 15px;
+  color: #fff;
+  text-align: center;
+  border: 2px solid #3c5a99;
+  box-shadow: 0 0 20px rgba(57, 127, 255, 0.5);
+}
+
+.mirror-puzzle-container h3 {
+  margin-bottom: 8px;
+  font-size: 18px;
+  color: #64b4ff;
+}
+
+.mirror-puzzle-container p {
+  margin-bottom: 20px;
+  font-size: 14px;
+  color: #a2b3d6;
+}
+
+.mirror-puzzle {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rem;
+}
+
+.mirror-image-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 1rem;
+  padding: 1.5rem;
+  background: linear-gradient(135deg, rgba(16, 32, 51, 0.6), rgba(26, 42, 71, 0.7));
+  border: 2px solid rgba(100, 180, 255, 0.3);
+  border-radius: 15px;
+  box-shadow: 
+    0 0 20px rgba(100, 180, 255, 0.2),
+    inset 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.mirror-image {
+  max-width: 150px;
+  max-height: 150px;
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  filter: drop-shadow(0 0 10px rgba(100, 180, 255, 0.3));
+  transition: transform 0.3s ease;
+}
+
+.mirror-image:hover {
+  transform: scale(1.05);
+}
+
+.mirror-input-area {
+  width: 100%;
+  margin-top: 1rem;
+}
+
+.mirror-code-input {
+  width: 100%;
+  max-width: 200px;
+  padding: 12px 20px;
+  font-size: 1.5rem;
+  text-align: center;
+  letter-spacing: 10px;
+  background: rgba(16, 32, 51, 0.6);
+  border: 2px solid rgba(100, 180, 255, 0.3);
+  border-radius: 10px;
+  color: #a6d8ff;
+  font-family: 'Orbitron', monospace, sans-serif;
+  transition: border-color 0.3s ease;
+}
+
+.mirror-code-input:focus {
+  outline: none;
+  border-color: #64b4ff;
+  box-shadow: 0 0 15px rgba(100, 180, 255, 0.4);
+}
+
+.mirror-code-input::placeholder {
+  color: rgba(166, 216, 255, 0.3);
+  letter-spacing: 15px;
+}
+
+.mirror-code-input.wrong {
+  animation: shake 0.5s ease;
+  border-color: #ff6b6b;
+  color: #ff6b6b;
 }
 
