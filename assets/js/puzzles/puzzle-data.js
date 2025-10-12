@@ -41,7 +41,7 @@ export const puzzles = {
     },
     'storage-clue': {
         title: '창고',
-        question: '다양한 실험 도구들이 있지만, 지금 당장 필요한 것은 없어 보인다.',
+        question: '▶ Ga (갈륨)을 얻었다.<br>▶ Hg (수은)을 얻었다.<br>▶ K (칼륨)을 얻었다.<br>▶ Li (리튬)을 얻었다.<br>▶ C₂H₅OH (에탄올)을 얻었다.',
         answer: 'clue'
     }
 };
