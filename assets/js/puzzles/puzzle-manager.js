@@ -110,7 +110,6 @@ class PuzzleManager {
         console.log(`다음 장면: ${sceneType}`);
         
         if (sceneType === 'show-paper') {
-            // 종이 오브젝트 표시
             const paperElement = document.querySelector('.map-paper');
             if (paperElement) {
                 paperElement.style.display = 'block';
@@ -445,7 +444,6 @@ class PuzzleManager {
             const userAnswer = codeInput.value.trim();
             
             if (userAnswer.length !== 4) {
-                // 입력 필드에 shake 효과
                 codeInput.classList.add('wrong');
                 setTimeout(() => {
                     codeInput.classList.remove('wrong');
@@ -466,7 +464,6 @@ class PuzzleManager {
                     }
                 }, 1500);
             } else {
-                // 오답 - shake 애니메이션만
                 codeInput.classList.add('wrong');
                 codeInput.value = '';
                 codeInput.focus();
