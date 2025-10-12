@@ -9,8 +9,9 @@ export const puzzles = {
     },
     'cabinet-puzzle': {
         title: '캐비넷 퍼즐',
-        question: '캐비넷의 비밀번호는 무엇일까요? (4자리 숫자)',
-        answer: '1234',
+        question: '올바른 원소를 선택하여 캐비넷을 열어주세요.',
+        answer: 'cabinet-lock',
+        correctAnswer: 'Ga',
         successMessage: '캐비넷이 열렸습니다! 새로운 아이템을 발견했습니다.',
         nextScene: 'materials-found'
     },
@@ -38,8 +39,8 @@ export const puzzles = {
         question: '낡은 거울이다. 특별한 것은 보이지 않는다.',
         answer: 'clue'
     },
-    'tool-storage-clue': {
-        title: '도구 보관함',
+    'storage-clue': {
+        title: '창고',
         question: '다양한 실험 도구들이 있지만, 지금 당장 필요한 것은 없어 보인다.',
         answer: 'clue'
     }

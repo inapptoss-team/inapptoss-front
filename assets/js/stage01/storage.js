@@ -1,6 +1,7 @@
 export function handleStorage(modalTitle, puzzleContent, puzzleInput, submitBtn) {
     modalTitle.textContent = '창고';
-    puzzleContent.innerHTML = `<p>정리되지 않은 잡동사니만 가득하다.</p>`;
+    puzzleContent.innerHTML = `<p>다양한 실험 도구들이 있지만, 지금 당장 필요한 것은 없어 보인다.</p>`;
     puzzleInput.style.display = 'none';
     submitBtn.style.display = 'none';
 }
+

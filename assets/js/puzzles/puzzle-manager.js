@@ -54,6 +54,10 @@ class PuzzleManager {
              this.puzzleInput.style.display = 'none';
              this.submitBtn.style.display = 'none';
              this.loadHtmlPuzzle('../puzzles/puzzle01.html', '.chair-puzzle-container', objectName, this.initChairPuzzle.bind(this));
+        } else if (puzzle.answer === 'cabinet-lock') {
+             this.puzzleInput.style.display = 'none';
+             this.submitBtn.style.display = 'none';
+             this.loadHtmlPuzzle('../puzzles/puzzle02.html', '.cabinet-puzzle-container', objectName, this.initCabinetPuzzle.bind(this));
         } else {
             this.puzzleContent.innerHTML = `
                 <p><strong>${objectName}을(를) 조사했습니다.</strong></p>
@@ -213,18 +217,15 @@ class PuzzleManager {
             confirmBtn.addEventListener('click', checkCompletion);
         }
 
-        // 테이블 클릭 시 힌트 표시
         if (tableCenter) {
             tableCenter.style.cursor = 'pointer';
             tableCenter.addEventListener('click', () => {
-                // 기존 오버레이가 있으면 제거
                 const existingOverlay = document.querySelector('.hint-overlay');
                 if (existingOverlay) {
                     existingOverlay.remove();
                     return;
                 }
 
-                // 오버레이 배경 생성
                 const overlay = document.createElement('div');
                 overlay.className = 'hint-overlay';
                 overlay.style.cssText = `
@@ -241,7 +242,6 @@ class PuzzleManager {
                     animation: fadeIn 0.3s ease-out;
                 `;
 
-                // 힌트 박스 생성
                 const hintBox = document.createElement('div');
                 hintBox.className = 'hint-box';
                 hintBox.style.cssText = `
@@ -264,7 +264,6 @@ class PuzzleManager {
                     backdrop-filter: blur(5px);
                 `;
                 
-                // X 버튼 생성
                 const closeBtn = document.createElement('button');
                 closeBtn.innerHTML = '×';
                 closeBtn.style.cssText = `
@@ -322,18 +321,15 @@ class PuzzleManager {
                 hintBox.appendChild(hintText);
                 overlay.appendChild(hintBox);
                 
-                // modal-body에 추가
                 const modalBody = this.puzzleContent.closest('.modal-body');
                 if (modalBody) {
                     modalBody.style.position = 'relative';
                     modalBody.appendChild(overlay);
                 } else {
-                    // fallback: puzzleContent에 추가
                     this.puzzleContent.style.position = 'relative';
                     this.puzzleContent.appendChild(overlay);
                 }
                 
-                // 오버레이 클릭 시 닫기 (힌트 박스 내부 클릭은 제외)
                 overlay.addEventListener('click', (e) => {
                     if (e.target === overlay) {
                         closeHint();
@@ -343,6 +339,70 @@ class PuzzleManager {
         }
 
         updateUI();
+    }
+
+    initCabinetPuzzle() {
+        const elementButtons = document.querySelectorAll('.element-btn');
+        const feedback = document.getElementById('puzzleFeedback');
+        const elementChoices = document.getElementById('elementChoices');
+        const lockImage = document.getElementById('lockImage');
+        
+        if (!elementButtons.length || !feedback || !elementChoices) {
+            console.error("Cabinet puzzle elements not found");
+            return;
+        }
+
+        const puzzle = puzzles['cabinet-puzzle'];
+        let isAnswered = false;
+
+        elementButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                if (isAnswered) return;
+                
+                const selectedElement = button.dataset.element;
+                
+                elementButtons.forEach(btn => {
+                    btn.classList.remove('selected', 'wrong');
+                });
+                
+                button.classList.add('selected');
+                
+                if (selectedElement === puzzle.correctAnswer) {
+                    isAnswered = true;
+                    
+                    elementChoices.style.display = 'none';
+                    
+                    feedback.textContent = '🎉 정답입니다! 캐비넷이 열렸습니다.';
+                    feedback.className = 'puzzle-feedback success';
+                    
+                    setTimeout(() => {
+                        if (lockImage) {
+                            lockImage.style.opacity = '0';
+                            lockImage.style.transition = 'opacity 0.5s ease';
+                            
+                            setTimeout(() => {
+                                lockImage.src = '../img/부식된자물쇠.png';
+                                lockImage.style.opacity = '1';
+                            }, 500);
+                        }
+                    }, 1000);
+                    
+                    setTimeout(() => {
+                        this.hide();
+                        if (puzzle.nextScene) {
+                            this.handleNextScene(puzzle.nextScene);
+                        }
+                    }, 2500);
+                } else {
+                    button.classList.remove('selected');
+                    button.classList.add('wrong');
+                    
+                    setTimeout(() => {
+                        button.classList.remove('wrong');
+                    }, 500);
+                }
+            });
+        });
     }
 }
 
