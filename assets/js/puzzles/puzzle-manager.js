@@ -132,12 +132,33 @@ class PuzzleManager {
     initChairPuzzle() {
         const chairItems = document.querySelectorAll('.chair-item');
         const feedback = document.getElementById('puzzleFeedback');
-        if (!chairItems.length || !feedback) {
+        const tableCenter = document.querySelector('.table-center');
+        const arrangementArea = document.querySelector('.arrangement-area');
+        if (!chairItems.length || !feedback || !tableCenter || !arrangementArea) {
             console.error("Chair puzzle elements not found");
             return;
         }
         
-        let chairStates = [1, 1, 1, 1, 1, 1, 1, 1];
+        let chairStates = [0, 0, 0, 0, 0, 0, 0, 0];
+        
+        const R_INNER = 38;
+        const EJECT_DELTA = 44;
+        const R_OUTER = R_INNER + EJECT_DELTA;
+
+        const tableCenterRect = tableCenter.getBoundingClientRect();
+        const tableCenterX = tableCenterRect.left + tableCenterRect.width / 2;
+        const tableCenterY = tableCenterRect.top + tableCenterRect.height / 2;
+
+        const dropZones = document.querySelectorAll('.drop-zone');
+        dropZones.forEach((dropZone, index) => {
+            const angle = (index * 2 * Math.PI) / 8;
+            const x = Math.cos(angle) * R_INNER;
+            const y = Math.sin(angle) * R_INNER;
+            
+            dropZone.style.left = `${50 + (x / 125) * 100}%`;
+            dropZone.style.top = `${50 + (y / 125) * 100}%`;
+            dropZone.style.transform = 'translate(-50%, -50%)';
+        });
 
         const updateUI = () => {
             feedback.textContent = `CODE: ${chairStates.join('')}`;
@@ -146,16 +167,21 @@ class PuzzleManager {
                 const chairNum = parseInt(chair.dataset.chair);
                 const state = chairStates[chairNum - 1];
                 const targetZone = document.querySelector(`.drop-zone[data-position="${chairNum}"]`);
-                const storage = document.querySelector('.chair-storage');
 
-                if (state === 0) {
-                    if (targetZone && !targetZone.contains(chair)) {
-                        targetZone.appendChild(chair);
-                    }
+                if (targetZone && !targetZone.contains(chair)) {
+                    targetZone.appendChild(chair);
+                }
+
+                if (state === 1) {
+                    const chairIndex = chairNum - 1;
+                    const angle = (chairIndex * 2 * Math.PI) / 8;
+
+                    const translateX = Math.cos(angle) * EJECT_DELTA;
+                    const translateY = Math.sin(angle) * EJECT_DELTA;
+                    
+                    chair.style.transform = `translate(${translateX}px, ${translateY}px)`;
                 } else {
-                    if (storage && !storage.contains(chair)) {
-                        storage.appendChild(chair);
-                    }
+                    chair.style.transform = 'translate(0px, 0px)';
                 }
             });
         };
@@ -185,6 +211,135 @@ class PuzzleManager {
         const confirmBtn = document.getElementById('confirmChairPuzzle');
         if (confirmBtn) {
             confirmBtn.addEventListener('click', checkCompletion);
+        }
+
+        // 테이블 클릭 시 힌트 표시
+        if (tableCenter) {
+            tableCenter.style.cursor = 'pointer';
+            tableCenter.addEventListener('click', () => {
+                // 기존 오버레이가 있으면 제거
+                const existingOverlay = document.querySelector('.hint-overlay');
+                if (existingOverlay) {
+                    existingOverlay.remove();
+                    return;
+                }
+
+                // 오버레이 배경 생성
+                const overlay = document.createElement('div');
+                overlay.className = 'hint-overlay';
+                overlay.style.cssText = `
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    background: rgba(0, 0, 0, 0.7);
+                    z-index: 1000;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    animation: fadeIn 0.3s ease-out;
+                `;
+
+                // 힌트 박스 생성
+                const hintBox = document.createElement('div');
+                hintBox.className = 'hint-box';
+                hintBox.style.cssText = `
+                    position: relative;
+                    background: linear-gradient(135deg, rgba(26, 42, 71, 0.9), rgba(16, 32, 51, 0.95));
+                    border: 2px solid rgba(100, 180, 255, 0.4);
+                    border-radius: 15px;
+                    padding: 2.5rem 1.5rem 1.5rem 1.5rem;
+                    max-width: 85%;
+                    width: auto;
+                    text-align: center;
+                    color: #e6f3ff;
+                    font-size: 0.95rem;
+                    line-height: 1.6;
+                    box-shadow: 
+                        0 0 20px rgba(57, 127, 255, 0.5),
+                        0 20px 60px rgba(0, 0, 0, 0.6),
+                        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+                    animation: scaleIn 0.3s ease-out;
+                    backdrop-filter: blur(5px);
+                `;
+                
+                // X 버튼 생성
+                const closeBtn = document.createElement('button');
+                closeBtn.innerHTML = '×';
+                closeBtn.style.cssText = `
+                    position: absolute;
+                    top: 10px;
+                    right: 10px;
+                    background: none;
+                    border: none;
+                    color: #a0b0c0;
+                    font-size: 1.8rem;
+                    cursor: pointer;
+                    padding: 0;
+                    width: 24px;
+                    height: 24px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    opacity: 0.7;
+                    transition: opacity 0.2s, color 0.2s;
+                    line-height: 1;
+                `;
+                
+                closeBtn.addEventListener('mouseenter', () => {
+                    closeBtn.style.opacity = '1';
+                    closeBtn.style.color = '#e0e8f0';
+                });
+                
+                closeBtn.addEventListener('mouseleave', () => {
+                    closeBtn.style.opacity = '0.7';
+                    closeBtn.style.color = '#a0b0c0';
+                });
+                
+                const closeHint = () => {
+                    overlay.style.opacity = '0';
+                    overlay.style.transition = 'opacity 0.2s ease-out';
+                    setTimeout(() => {
+                        overlay.remove();
+                    }, 200);
+                };
+
+                closeBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    closeHint();
+                });
+                
+                const hintText = document.createElement('p');
+                hintText.textContent = '책상 위에는 "시계의 두 손이 가리키는 곳, 9시와 3시를 기억해..."라고 적힌 메모가 놓여 있다.';
+                hintText.style.cssText = `
+                    margin: 0;
+                    word-break: keep-all;
+                    word-wrap: break-word;
+                `;
+                
+                hintBox.appendChild(closeBtn);
+                hintBox.appendChild(hintText);
+                overlay.appendChild(hintBox);
+                
+                // modal-body에 추가
+                const modalBody = this.puzzleContent.closest('.modal-body');
+                if (modalBody) {
+                    modalBody.style.position = 'relative';
+                    modalBody.appendChild(overlay);
+                } else {
+                    // fallback: puzzleContent에 추가
+                    this.puzzleContent.style.position = 'relative';
+                    this.puzzleContent.appendChild(overlay);
+                }
+                
+                // 오버레이 클릭 시 닫기 (힌트 박스 내부 클릭은 제외)
+                overlay.addEventListener('click', (e) => {
+                    if (e.target === overlay) {
+                        closeHint();
+                    }
+                });
+            });
         }
 
         updateUI();

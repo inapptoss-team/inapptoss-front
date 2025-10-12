@@ -5,7 +5,7 @@ export const puzzles = {
         answer: 'drag-drop',
         successMessage: '완벽합니다! 원형 탁자 배치가 완성되었습니다.',
         nextScene: 'cabinet-open',
-        correctPatternBinary: '00100010'
+        correctPatternBinary: '10001000'
     },
     'cabinet-puzzle': {
         title: '캐비넷 퍼즐',
