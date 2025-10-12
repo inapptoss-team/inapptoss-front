@@ -472,11 +472,18 @@ body{
   position: relative;
 }
 
+.arrangement-area {
+  overflow: hidden;
+  padding-block: 56px;
+}
+
 .circular-table {
   position: relative;
   width: 250px;
   height: 250px;
   margin: 0 auto;
+  overflow: visible;
+  padding-block: 40px;
 }
 
 .table-center {
@@ -492,8 +499,8 @@ body{
 
 .drop-zone {
   position: absolute;
-  width: 45px;
-  height: 45px;
+  width: 34px;
+  height: 34px;
   border: 2px dashed #3c5a99;
   border-radius: 8px;
   display: flex;
@@ -501,49 +508,9 @@ body{
   align-items: center;
 }
 
-.drop-zone.square {
-  border-radius: 5px;
-}
-
-.drop-zone.diamond {
-  transform: rotate(45deg);
-}
-
-.drop-zone.diamond span {
-  transform: rotate(-45deg);
-}
-
-.drop-zone span {
-  color: #3c5a99;
-  font-size: 14px;
-}
-
-.drop-zone[data-position="1"] { top: 0; left: 50%; transform: translateX(-50%); }
-.drop-zone[data-position="2"] { top: 15%; right: 15%; }
-.drop-zone[data-position="3"] { top: 50%; right: 0; transform: translateY(-50%); }
-.drop-zone[data-position="4"] { bottom: 15%; right: 15%; }
-.drop-zone[data-position="5"] { bottom: 0; left: 50%; transform: translateX(-50%); }
-.drop-zone[data-position="6"] { bottom: 15%; left: 15%; }
-.drop-zone[data-position="7"] { top: 50%; left: 0; transform: translateY(-50%); }
-.drop-zone[data-position="8"] { top: 15%; left: 15%; }
-
-.chair-storage {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  margin-top: 25px;
-  gap: 10px;
-  padding: 1rem;
-  background: rgba(0,0,0,.2);
-  border-radius: 15px;
-  max-width: 300px;
-  margin-left: auto;
-  margin-right: auto;
-}
-
 .chair-item {
-  width: 45px;
-  height: 45px;
+  width: 34px;
+  height: 34px;
   position: relative;
   cursor: pointer;
   border-radius: 6px;
@@ -552,6 +519,7 @@ body{
   display: flex;
   justify-content: center;
   align-items: center;
+  transition: transform 0.3s ease;
 }
 
 .chair-label {
@@ -576,13 +544,26 @@ body{
 }
 
 .puzzle-feedback {
-  margin-top: 20px;
-  padding: 10px;
-  background-color: #101c33;
+  text-align: center;
+  padding: 0.5rem;
   border-radius: 8px;
+  font-weight: 600;
+  min-height: 10px;
+  margin-top: 1.5rem;
+  background-color: #101c33;
   font-family: 'Orbitron', sans-serif;
   font-size: 16px;
   letter-spacing: 1px;
+}
+
+.puzzle-feedback.info { 
+  background: rgba(100,180,255,.2); 
+  color: #64b4ff; 
+}
+
+.puzzle-feedback.error { 
+  background: rgba(255,0,0,.2); 
+  color: #ff6b6b; 
 }
 
 .confirm-puzzle-btn {
@@ -591,8 +572,49 @@ body{
   width: 100%;
 }
 
-.chair-item.placed{ opacity:0.4; pointer-events:none; }
-.puzzle-feedback{ text-align:center; padding:0.5rem; border-radius:8px; font-weight:600; min-height:10px; margin-top: 1rem; }
-.puzzle-feedback.info{ background:rgba(100,180,255,.2); color:#64b4ff; }
-.puzzle-feedback.error{ background:rgba(255,0,0,.2); color:#ff6b6b; }
+.chair-item.placed { 
+  opacity: 0.4; 
+  pointer-events: none; 
+}
+
+/* Hint box animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes scaleOut {
+  from {
+    opacity: 1;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+}
 
