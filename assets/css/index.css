@@ -46,24 +46,15 @@ body{
     radial-gradient(60% 30% at 50% 5%, rgba(220,240,255,.75), rgba(220,240,255,0) 60%),
     radial-gradient(30% 15% at 50% 5%, rgba(255,255,255,.9), rgba(255,255,255,0) 65%);
   mix-blend-mode:screen;
-  animation:lightFlicker 5.5s infinite steps(60);
-  opacity:.25;
+  animation: softPulse 8s infinite ease-in-out;
+  opacity:.15;
   pointer-events:none;
 }
 
-@keyframes lightFlicker{
-  0%, 8% {opacity:.15}
-  9% {opacity:.28}
-  10% {opacity:.05}
-  11% {opacity:.3}
-  12% {opacity:.12}
-  15%, 40% {opacity:.25}
-  41% {opacity:.05}
-  42% {opacity:.3}
-  60% {opacity:.2}
-  80% {opacity:.26}
-  88% {opacity:.1}
-  100% {opacity:.22}
+@keyframes softPulse{
+  0% {opacity:.15}
+  50% {opacity:.25}
+  100% {opacity:.15}
 }
 
 /* Monitor blue glow */
@@ -828,5 +819,86 @@ body{
 .notification-toast.show {
   opacity: 1;
   transform: translateX(-50%) translateY(0);
+}
+
+/* Intro animation styles */
+.intro-content {
+  position: absolute;
+  top: 40%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 80%;
+  padding: 2rem;
+  background: rgba(0,0,0,0.5);
+  border-radius: 5px;
+  color: #dbe7ff;
+  font-family: 'Nanum Gothic Coding', monospace;
+  font-size: 1.5rem;
+  line-height: 1.6;
+}
+
+.news-ticker, .summary {
+    word-break: keep-all;
+}
+
+.cursor {
+  animation: blink 1s step-end infinite;
+}
+
+@keyframes blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+.flicker-out {
+    animation: flicker-out-anim 1s forwards;
+}
+
+@keyframes flicker-out-anim {
+    0% { opacity: 1; }
+    20% { opacity: 0.2; }
+    40% { opacity: 1; }
+    60% { opacity: 0.5; }
+    80% { opacity: 1; }
+    100% { opacity: 0; }
+}
+
+/* Stage Select styles */
+.stage-select-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  padding: 2rem;
+  text-align: center;
+}
+
+.stage-list {
+  margin: 2rem 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  width: 100%;
+}
+
+.stage-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.stage-item .btn {
+  width: 80%;
+  max-width: 300px;
+}
+
+.stage-desc {
+  font-size: 0.9rem;
+  color: #aeb9cc;
+  opacity: 0.8;
+  margin: 0;
 }
 
