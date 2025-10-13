@@ -44,7 +44,7 @@ document.addEventListener('DOMContentLoaded', () => {
   if (exploreBtn) {
     exploreBtn.addEventListener('click', (e) => {
       e.preventDefault();
-      window.location.href = '../map/map01.html';
+      window.location.href = './assets/lab/intro.html';
     });
   }
 
