@@ -43,38 +43,47 @@ class PuzzleManager {
             return;
         }
 
-        this.currentPuzzleId = puzzleId;
-        this.modalTitle.textContent = puzzle.title;
-
-        if (puzzle.answer === 'clue') {
-            this.puzzleContent.innerHTML = `<p style="font-size: 1.1rem; color: #a6d8ff;">${puzzle.question}</p>`;
-            this.puzzleInput.style.display = 'none';
-            this.submitBtn.style.display = 'none';
-        } else if (puzzle.answer === 'drag-drop') {
-             this.puzzleInput.style.display = 'none';
-             this.submitBtn.style.display = 'none';
-             this.loadHtmlPuzzle('../puzzles/puzzle01.html', '.chair-puzzle-container', objectName, this.initChairPuzzle.bind(this));
-        } else if (puzzle.answer === 'cabinet-lock') {
-             this.puzzleInput.style.display = 'none';
-             this.submitBtn.style.display = 'none';
-             this.loadHtmlPuzzle('../puzzles/puzzle02.html', '.cabinet-puzzle-container', objectName, this.initCabinetPuzzle.bind(this));
-        } else if (puzzle.answer === 'mirror-code') {
-             this.puzzleInput.style.display = 'none';
-             this.submitBtn.style.display = 'none';
-             this.loadHtmlPuzzle('../puzzles/puzzle03.html', '.mirror-puzzle-container', objectName, this.initMirrorPuzzle.bind(this));
-        } else {
-            this.puzzleContent.innerHTML = `
-                <p><strong>${objectName}을(를) 조사했습니다.</strong></p>
-                <p>${puzzle.question}</p>`;
-            this.puzzleInput.style.display = 'block';
-            this.submitBtn.style.display = 'block';
-            this.puzzleInput.value = '';
-            this.submitBtn.textContent = '확인';
-            this.submitBtn.onclick = null; // Clear previous onclick
-            this.puzzleInput.focus();
+        const showContent = () => {
+            this.currentPuzzleId = puzzleId;
+            this.modalTitle.textContent = puzzle.title;
+    
+            if (puzzle.answer === 'clue') {
+                this.puzzleContent.innerHTML = `<p style="font-size: 1.1rem; color: #a6d8ff;">${puzzle.question}</p>`;
+                this.puzzleInput.style.display = 'none';
+                this.submitBtn.style.display = 'none';
+            } else if (puzzle.answer === 'drag-drop') {
+                 this.puzzleInput.style.display = 'none';
+                 this.submitBtn.style.display = 'none';
+                 this.loadHtmlPuzzle('../puzzles/puzzle01.html', '.chair-puzzle-container', objectName, this.initChairPuzzle.bind(this), false);
+            } else if (puzzle.answer === 'cabinet-lock') {
+                 this.puzzleInput.style.display = 'none';
+                 this.submitBtn.style.display = 'none';
+                 this.loadHtmlPuzzle('../puzzles/puzzle02.html', '.cabinet-puzzle-container', objectName, this.initCabinetPuzzle.bind(this), false);
+            } else if (puzzle.answer === 'mirror-code') {
+                 this.puzzleInput.style.display = 'none';
+                 this.submitBtn.style.display = 'none';
+                 this.loadHtmlPuzzle('../puzzles/puzzle03.html', '.mirror-puzzle-container', objectName, this.initMirrorPuzzle.bind(this), false);
+            } else {
+                this.puzzleContent.innerHTML = `
+                    <p>${puzzle.question}</p>`;
+                this.puzzleInput.style.display = 'block';
+                this.submitBtn.style.display = 'block';
+                this.puzzleInput.value = '';
+                this.submitBtn.textContent = '확인';
+                this.submitBtn.onclick = null; // Clear previous onclick
+                this.puzzleInput.focus();
+            }
+            this.puzzleContent.style.opacity = '1';
         }
 
-        this.puzzleModal.classList.add('show');
+        if (this.puzzleModal.classList.contains('show')) {
+            this.puzzleContent.style.opacity = '0';
+            setTimeout(showContent, 300);
+        } else {
+            this.puzzleContent.style.opacity = '0';
+            this.puzzleModal.classList.add('show');
+            showContent();
+        }
     }
 
     hide() {
@@ -117,30 +126,45 @@ class PuzzleManager {
         }
     }
 
-    loadHtmlPuzzle(url, selector, objectName, callback) {
-        fetch(url)
-            .then(response => {
-                if (!response.ok) throw new Error('Network response was not ok');
-                return response.text();
-            })
-            .then(html => {
-                const parser = new DOMParser();
-                const doc = parser.parseFromString(html, 'text/html');
-                const puzzleContainer = doc.querySelector(selector);
-                if (puzzleContainer) {
-                    this.puzzleContent.innerHTML = `<p><strong>${objectName}을(를) 조사했습니다.</strong></p>`;
-                    this.puzzleContent.appendChild(puzzleContainer);
-                    if (callback) {
-                        setTimeout(callback, 100);
+    loadHtmlPuzzle(url, selector, objectName, callback, transition = true) {
+        const doLoad = () => {
+            fetch(url)
+                .then(response => {
+                    if (!response.ok) throw new Error('Network response was not ok');
+                    return response.text();
+                })
+                .then(html => {
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(html, 'text/html');
+                    const puzzleContainer = doc.querySelector(selector);
+                    if (puzzleContainer) {
+                        this.puzzleContent.innerHTML = '';
+                        this.puzzleContent.appendChild(puzzleContainer);
+                        if (callback) {
+                            setTimeout(callback, 100);
+                        }
+                    } else {
+                         this.puzzleContent.innerHTML = '<p>퍼즐 콘텐츠를 찾을 수 없습니다.</p>';
                     }
-                } else {
-                     this.puzzleContent.innerHTML = '<p>퍼즐 콘텐츠를 찾을 수 없습니다.</p>';
-                }
-            })
-            .catch(error => {
-                console.error('퍼즐 파일을 불러오는 데 실패했습니다:', error);
-                this.puzzleContent.innerHTML = '<p>퍼즐을 불러오는 데 실패했습니다.</p>';
-            });
+                    if (transition) {
+                        this.puzzleContent.style.opacity = '1';
+                    }
+                })
+                .catch(error => {
+                    console.error('퍼즐 파일을 불러오는 데 실패했습니다:', error);
+                    this.puzzleContent.innerHTML = '<p>퍼즐을 불러오는 데 실패했습니다.</p>';
+                    if (transition) {
+                        this.puzzleContent.style.opacity = '1';
+                    }
+                });
+        }
+        
+        if (transition) {
+            this.puzzleContent.style.opacity = '0';
+            setTimeout(doLoad, 300);
+        } else {
+            doLoad();
+        }
     }
 
     initChairPuzzle() {
@@ -203,8 +227,8 @@ class PuzzleManager {
         const checkCompletion = () => {
             const puzzle = puzzles['chair-puzzle'];
             if (chairStates.join('') === puzzle.correctPatternBinary) {
-                feedback.textContent = '🎉 정답입니다!';
-                feedback.className = 'puzzle-feedback success';
+                this.showNotification('창고에서 무슨 소리가 난 것 같다.');
+                
                 setTimeout(() => {
                     this.hide();
                     if (puzzle.nextScene) {
@@ -351,6 +375,31 @@ class PuzzleManager {
         updateUI();
     }
 
+    showNotification(message, duration = 3000) {
+        const existingToast = document.querySelector('.notification-toast');
+        if (existingToast) {
+            existingToast.remove();
+        }
+    
+        const toast = document.createElement('div');
+        toast.className = 'notification-toast';
+        toast.textContent = message;
+        document.body.appendChild(toast);
+    
+        setTimeout(() => {
+            toast.classList.add('show');
+        }, 10);
+    
+        setTimeout(() => {
+            toast.classList.remove('show');
+            setTimeout(() => {
+                if (toast.parentElement) {
+                    toast.parentElement.removeChild(toast);
+                }
+            }, 300);
+        }, duration);
+    }
+
     initCabinetPuzzle() {
         const elementButtons = document.querySelectorAll('.element-btn');
         const feedback = document.getElementById('puzzleFeedback');
@@ -382,7 +431,7 @@ class PuzzleManager {
                     
                     elementChoices.style.display = 'none';
                     
-                    feedback.textContent = '🎉 정답입니다!';
+                    feedback.textContent = ''; // 정답입니다 메시지를 즉시 띄우지 않도록 수정
                     feedback.className = 'puzzle-feedback success';
                     
                     setTimeout(() => {
@@ -393,6 +442,8 @@ class PuzzleManager {
                             setTimeout(() => {
                                 lockImage.src = '../img/부식된자물쇠.png';
                                 lockImage.style.opacity = '1';
+                                // 이미지가 바뀔 때 성공 메시지를 띄움
+                                feedback.textContent = ` ${puzzle.successMessage}`; 
                             }, 500);
                         }
                     }, 1000);
@@ -402,7 +453,7 @@ class PuzzleManager {
                         if (puzzle.nextScene) {
                             this.handleNextScene(puzzle.nextScene);
                         }
-                    }, 2500);
+                    }, 3500); // 메시지를 읽을 수 있도록 시간을 3.5초로 늘림
                 } else {
                     button.classList.remove('selected');
                     button.classList.add('wrong');
