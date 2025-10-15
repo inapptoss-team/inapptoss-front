@@ -64,3 +64,57 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 });
+
+// === 픽셀 의자 그리기 → dataURL 반환 ===
+function makeChairDataURL() {
+  // 의자 원본 해상도 (작게 그린 뒤 CSS로 확대)
+  const w = 20, h = 30;
+  const off = document.createElement('canvas');
+  off.width = w;
+  off.height = h;
+  const ctx = off.getContext('2d', { alpha: true });
+  ctx.imageSmoothingEnabled = false;
+
+  // 색상
+  const darkBrown = "#663D2E";
+  const mediumBrown = "#8E5F48";
+  const lightBrown = "#A87A5B";
+
+  // 등받이
+  ctx.fillStyle = darkBrown;
+  ctx.fillRect(4, 0, 12, 15);
+
+  // 등받이 상단 하이라이트
+  ctx.fillStyle = lightBrown;
+  ctx.fillRect(5, 1, 10, 2);
+
+  // 좌판
+  ctx.fillStyle = mediumBrown;
+  ctx.fillRect(3, 15, 14, 4);
+
+  // 다리
+  ctx.fillStyle = darkBrown;
+  ctx.fillRect(3, 19, 2, 11);   // 좌 앞
+  ctx.fillRect(2, 19, 2, 9);    // 좌 뒤
+  ctx.fillRect(15, 19, 2, 11);  // 우 앞
+  ctx.fillRect(16, 19, 2, 9);   // 우 뒤
+
+  return off.toDataURL('image/png');
+}
+
+// === 모든 .chair-item에 픽셀 의자 적용 ===
+const dataURL = makeChairDataURL();
+document.querySelectorAll('.chair-item').forEach(el => {
+  el.style.backgroundImage = `url(${dataURL})`;
+  el.style.backgroundRepeat = 'no-repeat';
+  el.style.backgroundPosition = 'center';
+  el.style.backgroundSize = 'contain';
+  // 픽셀 보존
+  el.style.imageRendering = 'pixelated';
+
+  // 의자 크기(필요 시 조절). .chair-item의 고정 크기가 없다면 지정해 주세요.
+  // 예: 40x60로 보이게
+  el.style.width = '40px';
+  el.style.height = '60px';
+});
+

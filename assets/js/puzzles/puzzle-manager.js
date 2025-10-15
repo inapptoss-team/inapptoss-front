@@ -63,6 +63,14 @@ class PuzzleManager {
                  this.puzzleInput.style.display = 'none';
                  this.submitBtn.style.display = 'none';
                  this.loadHtmlPuzzle('../puzzles/puzzle03.html', '.mirror-puzzle-container', objectName, this.initMirrorPuzzle.bind(this), false);
+            } else if (puzzle.answer === 'storage-clue') {
+                 this.puzzleInput.style.display = 'none';
+                 this.submitBtn.style.display = 'none';
+                 this.loadHtmlPuzzle('../puzzles/clue01.html', '.storage-clue-container', objectName, null, false);
+            } else if (puzzle.answer === 'paper-clue') {
+                 this.puzzleInput.style.display = 'none';
+                 this.submitBtn.style.display = 'none';
+                 this.loadHtmlPuzzle('../puzzles/clue02.html', '.paper-clue-container', objectName, null, false);
             } else {
                 this.puzzleContent.innerHTML = `
                     <p>${puzzle.question}</p>`;
@@ -179,8 +187,9 @@ class PuzzleManager {
         
         let chairStates = [0, 0, 0, 0, 0, 0, 0, 0];
         
-        const R_INNER = 38;
-        const EJECT_DELTA = 44;
+        const tableSize = Math.min(160, window.innerWidth * 0.2);
+        const R_INNER = tableSize * 0.15;
+        const EJECT_DELTA = tableSize * 0.18;
         const R_OUTER = R_INNER + EJECT_DELTA;
 
         const tableCenterRect = tableCenter.getBoundingClientRect();
@@ -193,8 +202,8 @@ class PuzzleManager {
             const x = Math.cos(angle) * R_INNER;
             const y = Math.sin(angle) * R_INNER;
             
-            dropZone.style.left = `${50 + (x / 125) * 100}%`;
-            dropZone.style.top = `${50 + (y / 125) * 100}%`;
+            dropZone.style.left = `${50 + (x / (tableSize * 0.625)) * 100}%`;
+            dropZone.style.top = `${50 + (y / (tableSize * 0.625)) * 100}%`;
             dropZone.style.transform = 'translate(-50%, -50%)';
         });
 
