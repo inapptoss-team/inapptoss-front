@@ -12,7 +12,7 @@ export const puzzles = {
         question: '올바른 원소를 선택하여 캐비넷을 열어주세요.',
         answer: 'cabinet-lock',
         correctAnswer: 'Ga',
-        successMessage: '거울 주변에 단서가 생긴 것 같다. 확인해보자.',
+        successMessage: '거울 주변에 단서가 생긴 것 같다. \n 확인해보자.',
         nextScene: 'show-paper'
     },
     'materials-puzzle': {

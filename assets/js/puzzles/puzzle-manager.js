@@ -188,13 +188,68 @@ class PuzzleManager {
         let chairStates = [0, 0, 0, 0, 0, 0, 0, 0];
         
         const tableSize = Math.min(160, window.innerWidth * 0.2);
-        const R_INNER = tableSize * 0.15;
-        const EJECT_DELTA = tableSize * 0.18;
-        const R_OUTER = R_INNER + EJECT_DELTA;
+        const R_INNER = tableSize * 0.2; // 의자 위치를 더 안쪽으로
+        const EJECT_DELTA = tableSize * 0.25; // 두 번째 원 위치까지 이동하도록 조정
+        const R_OUTER = R_INNER + EJECT_DELTA; // 의자 이동 위치
 
         const tableCenterRect = tableCenter.getBoundingClientRect();
         const tableCenterX = tableCenterRect.left + tableCenterRect.width / 2;
         const tableCenterY = tableCenterRect.top + tableCenterRect.height / 2;
+
+        // Canvas에 원형 픽셀 선 그리기
+        const drawPixelCircles = () => {
+            const canvas = document.getElementById('pixelCircle');
+            if (!canvas) return;
+            
+            const ctx = canvas.getContext('2d');
+            const canvasSize = Math.min(300, window.innerWidth * 0.4);
+            canvas.width = canvasSize;
+            canvas.height = canvasSize;
+            
+            const centerX = canvasSize / 2;
+            const centerY = canvasSize / 2;
+            
+            // 실제 의자 위치 확인을 위한 디버깅
+            console.log('R_INNER:', R_INNER, 'R_OUTER:', R_OUTER);
+            console.log('tableSize:', tableSize, 'canvasSize:', canvasSize);
+            
+            // 픽셀 스타일로 원 그리기
+            const drawPixelCircle = (radius, color) => {
+                ctx.fillStyle = color;
+                const pixelSize = 2;
+                
+                for (let angle = 0; angle < 2 * Math.PI; angle += 0.01) {
+                    const x = centerX + Math.cos(angle) * radius;
+                    const y = centerY + Math.sin(angle) * radius;
+                    
+                    // 픽셀 효과를 위해 작은 사각형으로 그리기
+                    ctx.fillRect(
+                        Math.floor(x - pixelSize/2), 
+                        Math.floor(y - pixelSize/2), 
+                        pixelSize, 
+                        pixelSize
+                    );
+                }
+            };
+            
+            // 실제 의자 위치에 맞춰서 원 그리기
+            // R_INNER = 32, R_OUTER = 72 (EJECT_DELTA 증가로 변경됨)
+            const chairBaseRadius = (R_INNER / tableSize) * canvasSize * 0.9; // 의자 기본 위치
+            const chairMoveRadius = (R_OUTER / tableSize) * canvasSize * 0.7; // 의자 이동 위치 (두 번째 원) - 반지름 줄임
+            const chairThirdRadius = (R_OUTER / tableSize) * canvasSize * 0.8; // 세 번째 원 - 반지름 줄임
+            
+            console.log('Canvas radii:', chairBaseRadius, chairMoveRadius, chairThirdRadius);
+            console.log('R_INNER:', R_INNER, 'R_OUTER:', R_OUTER);
+            
+            // 의자 기본 위치 원 (drop-zone 위치)
+            drawPixelCircle(chairBaseRadius, '#c4eaeb');
+            
+            // 의자 이동 위치 원 (클릭 시 이동하는 위치)
+            drawPixelCircle(chairMoveRadius, '#c4eaeb');
+            
+            // 세 번째 원 (더 바깥쪽)
+            drawPixelCircle(chairThirdRadius, '#c4eaeb');
+        };
 
         const dropZones = document.querySelectorAll('.drop-zone');
         dropZones.forEach((dropZone, index) => {
@@ -202,9 +257,18 @@ class PuzzleManager {
             const x = Math.cos(angle) * R_INNER;
             const y = Math.sin(angle) * R_INNER;
             
-            dropZone.style.left = `${50 + (x / (tableSize * 0.625)) * 100}%`;
-            dropZone.style.top = `${50 + (y / (tableSize * 0.625)) * 100}%`;
+            const leftPercent = 50 + (x / (tableSize * 0.625)) * 100;
+            const topPercent = 50 + (y / (tableSize * 0.625)) * 100;
+            
+            dropZone.style.left = `${leftPercent}%`;
+            dropZone.style.top = `${topPercent}%`;
             dropZone.style.transform = 'translate(-50%, -50%)';
+            
+            // 첫 번째 drop-zone의 실제 위치 로그
+            if (index === 0) {
+                console.log('Drop-zone 0 position:', leftPercent, topPercent);
+                console.log('Calculated from:', x, y, 'angle:', angle);
+            }
         });
 
         const updateUI = () => {
@@ -381,6 +445,9 @@ class PuzzleManager {
             });
         }
 
+        // 원형 픽셀 선 그리기
+        drawPixelCircles();
+        
         updateUI();
     }
 
@@ -392,7 +459,7 @@ class PuzzleManager {
     
         const toast = document.createElement('div');
         toast.className = 'notification-toast';
-        toast.textContent = message;
+        toast.innerHTML = message.replace(/\n/g, '<br>');
         document.body.appendChild(toast);
     
         setTimeout(() => {
@@ -452,7 +519,8 @@ class PuzzleManager {
                                 lockImage.src = '../img/부식된자물쇠.png';
                                 lockImage.style.opacity = '1';
                                 // 이미지가 바뀔 때 성공 메시지를 띄움
-                                feedback.textContent = ` ${puzzle.successMessage}`; 
+                                feedback.textContent = ` ${puzzle.successMessage}`;
+                                feedback.classList.add('show'); 
                             }, 500);
                         }
                     }, 1000);
@@ -514,7 +582,7 @@ class PuzzleManager {
             if (userAnswer === puzzle.correctAnswer) {
                 isAnswered = true;
                 feedback.textContent = '🎉 정답입니다!';
-                feedback.className = 'puzzle-feedback success';
+                feedback.className = 'puzzle-feedback success show';
                 codeInput.disabled = true;
                 
                 setTimeout(() => {

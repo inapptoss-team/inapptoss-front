@@ -393,7 +393,8 @@ body{
   border:2px solid rgba(100,180,255,.4);
   border-radius:20px;
   width:min(70vw, 300px);
-  max-height:65vh;
+  max-height:85vh;
+  min-height:0;
   overflow:hidden;
   box-shadow: 0 20px 60px rgba(0,0,0,.6), 0 0 40px rgba(100,180,255,.2);
   margin: 0 auto;
@@ -450,14 +451,20 @@ body{
 }
 
 .chair-puzzle-container h3 {
-  margin-bottom: 4px;
+  margin-bottom: 8px;
   font-size: 16px;
 }
 
 .chair-puzzle-container p {
-  margin-bottom: 12px;
+  margin-bottom: 3rem;
   font-size: 12px;
   color: #a2b3d6;
+}
+
+.chair-puzzle-container .puzzle-feedback {
+  display: block;
+  margin-top: 3rem;
+  padding-bottom: 0.5rem;
 }
 
 .puzzle-area {
@@ -465,8 +472,8 @@ body{
 }
 
 .arrangement-area {
-  overflow: hidden;
-  padding-block: 20px;
+  overflow: visible;
+  padding-block: 80px;
 }
 
 .circular-table {
@@ -476,6 +483,15 @@ body{
   margin: 0 auto;
   overflow: visible;
   padding-block: 20px;
+}
+
+#pixelCircle {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 0;
+  pointer-events: none;
 }
 
 .table-center {
@@ -491,9 +507,9 @@ body{
 
 .drop-zone {
   position: absolute;
-  width: min(22px, 3vw);
-  height: min(22px, 3vw);
-  border: 2px dashed #3c5a99;
+  width: 26px;
+  height: 26px;
+  border: 1px dashed #3c5a99;
   border-radius: 6px;
   display: flex;
   justify-content: center;
@@ -501,12 +517,15 @@ body{
 }
 
 .chair-item {
-  width: min(22px, 3vw);
-  height: min(22px, 3vw);
+  width: 26px;
+  height: 26px;
   position: relative;
   cursor: pointer;
   border-radius: 5px;
-  background: rgba(100,180,255,.1);
+  background-image: url('../img/의자.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
   border: 1px solid rgba(100,180,255,.2);
   display: flex;
   justify-content: center;
@@ -516,18 +535,19 @@ body{
 
 .chair-label {
   position: absolute;
-  top: -2px;
-  right: -2px;
-  width: min(10px, 1.2vw);
-  height: min(10px, 1.2vw);
+  top: -6px;
+  right: -6px;
+  width: min(12px, 1.5vw);
+  height: min(12px, 1.5vw);
   background: rgba(100,180,255,.9);
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: min(7px, 0.8vw);
+  font-size: min(8px, 1vw);
   font-weight: bold;
   color: #fff;
+  border: 1px solid rgba(255,255,255,0.3);
 }
 
 .drop-zone .chair-item {
@@ -541,11 +561,16 @@ body{
   border-radius: 8px;
   font-weight: bold;
   min-height: 0;
-  margin-top: 0.25rem;
+  margin-top: 0.5rem;
   background-color: transparent;
   font-family: 'Orbitron', sans-serif;
   font-size: 0.9rem;
   letter-spacing: 1px;
+  display: none;
+}
+
+.puzzle-feedback.show {
+  display: block;
 }
 
 .puzzle-feedback.success {
@@ -559,7 +584,7 @@ body{
 }
 
 .confirm-puzzle-btn {
-  margin-top: 8px;
+  margin-top: 10px;
   padding: 8px 16px;
   width: 100%;
   font-size: 14px;
@@ -624,22 +649,28 @@ body{
 }
 
 .cabinet-puzzle-container p {
-  margin-bottom: 12px;
+  margin-bottom: 20px;
   font-size: 12px;
   color: #a2b3d6;
+}
+
+.cabinet-puzzle-container .puzzle-feedback {
+  min-height: 0;
+  margin-top: 0.5rem;
+  padding: 0;
 }
 
 .cabinet-lock {
   display: flex;
   flex-direction: column;
   align-items: center;
+  gap: 1rem;
 }
 
 .lock-image-container {
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-bottom: 0.5rem;
   padding: 0.75rem;
   background: linear-gradient(135deg, rgba(16, 32, 51, 0.6), rgba(26, 42, 71, 0.7));
   border: 2px solid rgba(100, 180, 255, 0.3);
@@ -676,7 +707,7 @@ body{
   color: #a6d8ff;
   font-size: 0.85rem;
   font-weight: 400;
-  padding: 0.3rem 0;
+  padding: 0.3rem 1rem;
   cursor: pointer;
   transition: all 0.2s ease;
   text-align: left;
@@ -734,7 +765,7 @@ body{
   flex-direction: column;
   align-items: center;
   gap: 0.5rem;
-  margin-bottom: 1rem;
+  margin: 1.5rem 0;
 }
 
 .materials-row {
@@ -861,9 +892,15 @@ body{
 }
 
 .mirror-puzzle-container p {
-  margin-bottom: 12px;
+  margin-bottom: 20px;
   font-size: 12px;
   color: #a2b3d6;
+}
+
+.mirror-puzzle-container .puzzle-feedback {
+  max-width: 200px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .mirror-puzzle {
@@ -877,7 +914,6 @@ body{
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-bottom: 0.5rem;
   padding: 0.75rem;
   background: linear-gradient(135deg, rgba(16, 32, 51, 0.6), rgba(26, 42, 71, 0.7));
   border: 2px solid rgba(100, 180, 255, 0.3);
