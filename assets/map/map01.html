@@ -12,6 +12,14 @@
         <div class="scene">
             <header class="game-header">
                 <button class="btn main-btn" onclick="window.location.href='../../index.html'">메인으로</button>
+
+                <!-- 게임 리셋 버튼 (개발용) -->
+                <button onclick="window.puzzleManager.resetProgress(); location.reload();" 
+                        style="position: fixed; top: 10px; right: 10px; z-index: 9999; 
+                               background: #ff6b6b; color: white; border: none; padding: 10px; 
+                               border-radius: 5px; cursor: pointer;">
+                    초기화
+                </button>
             </header>
             <div class="map-container">
                 <div class="map-content">
@@ -52,6 +60,6 @@
         </div>
     </main>
     <script type="module" src="../js/main.js"></script>
-    <script type="module" src="../js/map/interactions.js"></script>
+    <script type="module" src="../js/stage01/lab-map-interactions.js"></script>
 </body>
 </html>

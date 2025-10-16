@@ -10,6 +10,16 @@ class PuzzleManager {
         this.closeBtn = document.getElementById('closeModal');
         this.currentPuzzleId = null;
 
+        this.puzzleOrder = [
+            'chair-puzzle',
+            'storage-clue',
+            'cabinet-puzzle',
+            'paper-clue',
+            'mirror-puzzle'
+        ];
+        
+        this.currentProgress = this.loadProgress();
+
         this.attachEventListeners();
     }
 
@@ -37,6 +47,13 @@ class PuzzleManager {
     }
 
     show(puzzleId, objectName = '오브젝트') {
+        const isLocked = this.isPuzzleLocked(puzzleId);
+        
+        if (isLocked) {
+            this.showLockedWithHandler(puzzleId);
+            return;
+        }
+        
         const puzzle = puzzles[puzzleId];
         if (!puzzle) {
             console.error(`Puzzle with id "${puzzleId}" not found.`);
@@ -66,11 +83,15 @@ class PuzzleManager {
             } else if (puzzle.answer === 'storage-clue') {
                  this.puzzleInput.style.display = 'none';
                  this.submitBtn.style.display = 'none';
-                 this.loadHtmlPuzzle('../puzzles/clue01.html', '.storage-clue-container', objectName, null, false);
+                 this.loadHtmlPuzzle('../puzzles/clue01.html', '.storage-clue-container', objectName, () => {
+                     this.completePuzzle('storage-clue');
+                 }, false);
             } else if (puzzle.answer === 'paper-clue') {
                  this.puzzleInput.style.display = 'none';
                  this.submitBtn.style.display = 'none';
-                 this.loadHtmlPuzzle('../puzzles/clue02.html', '.paper-clue-container', objectName, null, false);
+                 this.loadHtmlPuzzle('../puzzles/clue02.html', '.paper-clue-container', objectName, () => {
+                     this.completePuzzle('paper-clue');
+                 }, false);
             } else {
                 this.puzzleContent.innerHTML = `
                     <p>${puzzle.question}</p>`;
@@ -78,7 +99,7 @@ class PuzzleManager {
                 this.submitBtn.style.display = 'block';
                 this.puzzleInput.value = '';
                 this.submitBtn.textContent = '확인';
-                this.submitBtn.onclick = null; // Clear previous onclick
+                this.submitBtn.onclick = null;
                 this.puzzleInput.focus();
             }
             this.puzzleContent.style.opacity = '1';
@@ -110,6 +131,9 @@ class PuzzleManager {
             this.puzzleContent.innerHTML = `<p style="color: #00ff00; font-weight: bold;">✅ ${puzzle.successMessage}</p>`;
             this.puzzleInput.style.display = 'none';
             this.submitBtn.textContent = '다음으로';
+            
+            this.completePuzzle(this.currentPuzzleId);
+            
             this.submitBtn.onclick = () => {
                 this.hide();
                 if (puzzle.nextScene) {
@@ -131,6 +155,7 @@ class PuzzleManager {
             if (paperElement) {
                 paperElement.style.display = 'block';
             }
+            this.completePuzzle('cabinet-puzzle');
         }
     }
 
@@ -188,15 +213,14 @@ class PuzzleManager {
         let chairStates = [0, 0, 0, 0, 0, 0, 0, 0];
         
         const tableSize = Math.min(160, window.innerWidth * 0.2);
-        const R_INNER = tableSize * 0.2; // 의자 위치를 더 안쪽으로
-        const EJECT_DELTA = tableSize * 0.25; // 두 번째 원 위치까지 이동하도록 조정
-        const R_OUTER = R_INNER + EJECT_DELTA; // 의자 이동 위치
+        const R_INNER = tableSize * 0.2;
+        const EJECT_DELTA = tableSize * 0.25;
+        const R_OUTER = R_INNER + EJECT_DELTA;
 
         const tableCenterRect = tableCenter.getBoundingClientRect();
         const tableCenterX = tableCenterRect.left + tableCenterRect.width / 2;
         const tableCenterY = tableCenterRect.top + tableCenterRect.height / 2;
 
-        // Canvas에 원형 픽셀 선 그리기
         const drawPixelCircles = () => {
             const canvas = document.getElementById('pixelCircle');
             if (!canvas) return;
@@ -209,11 +233,9 @@ class PuzzleManager {
             const centerX = canvasSize / 2;
             const centerY = canvasSize / 2;
             
-            // 실제 의자 위치 확인을 위한 디버깅
             console.log('R_INNER:', R_INNER, 'R_OUTER:', R_OUTER);
             console.log('tableSize:', tableSize, 'canvasSize:', canvasSize);
             
-            // 픽셀 스타일로 원 그리기
             const drawPixelCircle = (radius, color) => {
                 ctx.fillStyle = color;
                 const pixelSize = 2;
@@ -222,7 +244,6 @@ class PuzzleManager {
                     const x = centerX + Math.cos(angle) * radius;
                     const y = centerY + Math.sin(angle) * radius;
                     
-                    // 픽셀 효과를 위해 작은 사각형으로 그리기
                     ctx.fillRect(
                         Math.floor(x - pixelSize/2), 
                         Math.floor(y - pixelSize/2), 
@@ -232,22 +253,17 @@ class PuzzleManager {
                 }
             };
             
-            // 실제 의자 위치에 맞춰서 원 그리기
-            // R_INNER = 32, R_OUTER = 72 (EJECT_DELTA 증가로 변경됨)
-            const chairBaseRadius = (R_INNER / tableSize) * canvasSize * 0.9; // 의자 기본 위치
-            const chairMoveRadius = (R_OUTER / tableSize) * canvasSize * 0.7; // 의자 이동 위치 (두 번째 원) - 반지름 줄임
-            const chairThirdRadius = (R_OUTER / tableSize) * canvasSize * 0.8; // 세 번째 원 - 반지름 줄임
+            const chairBaseRadius = (R_INNER / tableSize) * canvasSize * 0.9;
+            const chairMoveRadius = (R_OUTER / tableSize) * canvasSize * 0.7;
+            const chairThirdRadius = (R_OUTER / tableSize) * canvasSize * 0.8;
             
             console.log('Canvas radii:', chairBaseRadius, chairMoveRadius, chairThirdRadius);
             console.log('R_INNER:', R_INNER, 'R_OUTER:', R_OUTER);
             
-            // 의자 기본 위치 원 (drop-zone 위치)
             drawPixelCircle(chairBaseRadius, '#c4eaeb');
             
-            // 의자 이동 위치 원 (클릭 시 이동하는 위치)
             drawPixelCircle(chairMoveRadius, '#c4eaeb');
             
-            // 세 번째 원 (더 바깥쪽)
             drawPixelCircle(chairThirdRadius, '#c4eaeb');
         };
 
@@ -264,7 +280,6 @@ class PuzzleManager {
             dropZone.style.top = `${topPercent}%`;
             dropZone.style.transform = 'translate(-50%, -50%)';
             
-            // 첫 번째 drop-zone의 실제 위치 로그
             if (index === 0) {
                 console.log('Drop-zone 0 position:', leftPercent, topPercent);
                 console.log('Calculated from:', x, y, 'angle:', angle);
@@ -300,6 +315,8 @@ class PuzzleManager {
         const checkCompletion = () => {
             const puzzle = puzzles['chair-puzzle'];
             if (chairStates.join('') === puzzle.correctPatternBinary) {
+                this.completePuzzle('chair-puzzle');
+                
                 this.showNotification('창고에서 무슨 소리가 난 것 같다.');
                 
                 setTimeout(() => {
@@ -445,7 +462,6 @@ class PuzzleManager {
             });
         }
 
-        // 원형 픽셀 선 그리기
         drawPixelCircles();
         
         updateUI();
@@ -507,7 +523,7 @@ class PuzzleManager {
                     
                     elementChoices.style.display = 'none';
                     
-                    feedback.textContent = ''; // 정답입니다 메시지를 즉시 띄우지 않도록 수정
+                    feedback.textContent = '';
                     feedback.className = 'puzzle-feedback success';
                     
                     setTimeout(() => {
@@ -518,9 +534,10 @@ class PuzzleManager {
                             setTimeout(() => {
                                 lockImage.src = '../img/부식된자물쇠.png';
                                 lockImage.style.opacity = '1';
-                                // 이미지가 바뀔 때 성공 메시지를 띄움
                                 feedback.textContent = ` ${puzzle.successMessage}`;
-                                feedback.classList.add('show'); 
+                                feedback.classList.add('show');
+                                
+                                this.completePuzzle('cabinet-puzzle');
                             }, 500);
                         }
                     }, 1000);
@@ -530,7 +547,7 @@ class PuzzleManager {
                         if (puzzle.nextScene) {
                             this.handleNextScene(puzzle.nextScene);
                         }
-                    }, 3500); // 메시지를 읽을 수 있도록 시간을 3.5초로 늘림
+                    }, 3500);
                 } else {
                     button.classList.remove('selected');
                     button.classList.add('wrong');
@@ -581,9 +598,11 @@ class PuzzleManager {
             
             if (userAnswer === puzzle.correctAnswer) {
                 isAnswered = true;
-                feedback.textContent = '🎉 정답입니다!';
+                feedback.textContent = '🎉 STAGE1 실험실 CLEAR 🎉';
                 feedback.className = 'puzzle-feedback success show';
                 codeInput.disabled = true;
+                
+                this.completePuzzle('mirror-puzzle');
                 
                 setTimeout(() => {
                     this.hide();
@@ -603,6 +622,95 @@ class PuzzleManager {
         });
 
         codeInput.focus();
+    }
+
+    loadProgress() {
+        const saved = localStorage.getItem('puzzle-progress');
+        return saved ? JSON.parse(saved) : {
+            completedPuzzles: [],
+            currentStep: 0
+        };
+    }
+    
+    saveProgress() {
+        localStorage.setItem('puzzle-progress', JSON.stringify(this.currentProgress));
+    }
+    
+    completePuzzle(puzzleId) {
+        if (!this.currentProgress.completedPuzzles.includes(puzzleId)) {
+            this.currentProgress.completedPuzzles.push(puzzleId);
+            this.currentProgress.currentStep = Math.max(
+                this.currentProgress.currentStep, 
+                this.puzzleOrder.indexOf(puzzleId) + 1
+            );
+            this.saveProgress();
+        }
+    }
+    
+    isPuzzleLocked(puzzleId) {
+        const puzzleIndex = this.puzzleOrder.indexOf(puzzleId);
+        return puzzleIndex > this.currentProgress.currentStep;
+    }
+    
+    showLockedWithHandler(puzzleId) {
+        import('../stage01/mirror.js').then(module => {
+            if (puzzleId === 'mirror-puzzle') {
+                module.handleMirror(this.modalTitle, this.puzzleContent, this.puzzleInput, this.submitBtn);
+                this.puzzleModal.classList.add('show');
+            }
+        }).catch(error => {
+            console.error('mirror.js import 실패:', error);
+        });
+        
+        import('../stage01/cabinet.js').then(module => {
+            if (puzzleId === 'cabinet-puzzle') {
+                module.handleCabinet(this.modalTitle, this.puzzleContent, this.puzzleInput, this.submitBtn);
+                this.puzzleModal.classList.add('show');
+            }
+        }).catch(error => {
+            console.error('cabinet.js import 실패:', error);
+        });
+        
+        import('../stage01/storage.js').then(module => {
+            if (puzzleId === 'storage-clue') {
+                module.handleStorage(this.modalTitle, this.puzzleContent, this.puzzleInput, this.submitBtn);
+                this.puzzleModal.classList.add('show');
+            }
+        }).catch(error => {
+            console.error('storage.js import 실패:', error);
+        });
+        
+        import('../stage01/paper.js').then(module => {
+            if (puzzleId === 'paper-clue') {
+                module.handlePaper(this.modalTitle, this.puzzleContent, this.puzzleInput, this.submitBtn);
+                this.puzzleModal.classList.add('show');
+            }
+        }).catch(error => {
+            console.error('paper.js import 실패:', error);
+        });
+    }
+    
+    resetProgress() {
+        this.currentProgress = {
+            completedPuzzles: [],
+            currentStep: 0
+        };
+        this.saveProgress();
+        console.log('진행 상태가 리셋되었습니다.');
+    }
+
+    getProgress() {
+        console.log('현재 진행 상태:', this.currentProgress);
+        return this.currentProgress;
+    }
+
+    unlockAll() {
+        this.currentProgress = {
+            completedPuzzles: this.puzzleOrder,
+            currentStep: this.puzzleOrder.length
+        };
+        this.saveProgress();
+        console.log('모든 퍼즐이 잠금 해제되었습니다.');
     }
 }
 

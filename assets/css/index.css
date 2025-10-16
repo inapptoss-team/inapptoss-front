@@ -351,6 +351,14 @@ body{
   box-shadow: 0 0 20px rgba(0, 255, 0, 0.4);
 }
 
+.locked-hint {
+  font-style: italic;
+  opacity: 0.8;
+  font-size: 0.9rem;
+  color: #ff6b6b;
+  margin-top: 1rem;
+}
+
 .map-mirror:hover::before {
   transform: scale(1.1);
   filter: drop-shadow(0 0 10px rgba(0, 255, 0, 0.6));
