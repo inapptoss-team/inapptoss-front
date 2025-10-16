@@ -5,6 +5,20 @@
 
 import puzzleManager from './puzzles/puzzle-manager.js';
 
+window.puzzleManager = puzzleManager;
+
+window.resetProgress = () => {
+  window.puzzleManager.resetProgress();
+};
+
+window.getProgress = () => {
+  return window.puzzleManager.getProgress();
+};
+
+window.unlockAll = () => {
+  window.puzzleManager.unlockAll();
+};
+
 document.addEventListener('DOMContentLoaded', () => {
   const startBtn = document.querySelector('[data-action="start"]');
   const labBtn = document.querySelector('[data-action="lab"]');
@@ -59,7 +73,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const puzzleType = btn.dataset.puzzle;
       const objectName = btn.dataset.object;
       if (puzzleType) {
-        puzzleManager.show(puzzleType, objectName);
+        window.puzzleManager.show(puzzleType, objectName);
       }
     });
   });

@@ -12,7 +12,7 @@ export const puzzles = {
         question: '올바른 원소를 선택하여 캐비넷을 열어주세요.',
         answer: 'cabinet-lock',
         correctAnswer: 'Ga',
-        successMessage: '거울 주변에 단서가 생긴 것 같다. 확인해보자.',
+        successMessage: '거울 주변에 단서가 생긴 것 같다. \n 확인해보자.',
         nextScene: 'show-paper'
     },
     'materials-puzzle': {
@@ -44,12 +44,12 @@ export const puzzles = {
     },
     'storage-clue': {
         title: '창고',
-        question: '▶ Ga (갈륨)을 얻었다.<br>▶ Hg (수은)을 얻었다.<br>▶ K (칼륨)을 얻었다.<br>▶ Li (리튬)을 얻었다.<br>▶ C₂H₅OH (에탄올)을 얻었다.<br><br>이 재료들, 어딘가에 써야 할 것 같은데… 캐비넷을 확인하자.',
-        answer: 'clue'
+        question: '의자 퍼즐을 완료한 후 창고에서 발견한 재료들을 확인해보세요.',
+        answer: 'storage-clue'
     },
     'paper-clue': {
         title: '거꾸로 쓰인 종이',
-        question: '<p style="font-size: 1.1rem; color: #a6d8ff; text-align: center; margin-bottom: 1rem;">거울에 비춰보면 뭔가 보일지도...</p><img src="../img/종이.png" alt="거꾸로 쓰인 종이" style="max-width: 100%; height: auto; display: block; margin: 0 auto;">',
-        answer: 'clue'
+        question: '거울에 비춰보면 뭔가 보일지도...',
+        answer: 'paper-clue'
     }
 };

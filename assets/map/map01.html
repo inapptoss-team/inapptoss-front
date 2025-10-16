@@ -12,6 +12,14 @@
         <div class="scene">
             <header class="game-header">
                 <button class="btn main-btn" onclick="window.location.href='../../index.html'">메인으로</button>
+
+                <!-- 게임 리셋 버튼 (개발용) -->
+                <button onclick="window.puzzleManager.resetProgress(); location.reload();" 
+                        style="position: fixed; top: 10px; right: 10px; z-index: 9999; 
+                               background: #ff6b6b; color: white; border: none; padding: 10px; 
+                               border-radius: 5px; cursor: pointer;">
+                    초기화
+                </button>
             </header>
             <div class="map-container">
                 <div class="map-content">
@@ -21,10 +29,10 @@
                     <div class="interactive-areas">
 
                         <!-- 퍼즐 -->
-                        <div class="interactive-btn map-desk" data-object="책상" data-puzzle="storage-clue"></div>
-                        <div class="interactive-btn map-cabinet" data-object="캐비넷" data-puzzle="chair-puzzle"></div>
+                        <div class="interactive-btn map-desk" data-object="책상" data-puzzle="chair-puzzle"></div>
+                        <div class="interactive-btn map-cabinet" data-object="캐비넷" data-puzzle="cabinet-puzzle"></div>
                         <div class="interactive-btn map-mirror" data-object="거울" data-puzzle="mirror-puzzle"></div>
-                        <div class="interactive-btn map-storage" data-object="창고" data-puzzle="cabinet-puzzle"></div>
+                        <div class="interactive-btn map-storage" data-object="창고" data-puzzle="storage-clue"></div>
                         <div class="interactive-btn map-paper" data-object="종이" data-puzzle="paper-clue" style="display: none;"></div>
                     </div>
                 </div>
@@ -52,6 +60,6 @@
         </div>
     </main>
     <script type="module" src="../js/main.js"></script>
-    <script type="module" src="../js/map/interactions.js"></script>
+    <script type="module" src="../js/stage01/lab-map-interactions.js"></script>
 </body>
 </html>
