@@ -64,29 +64,29 @@ class PuzzleManager {
             this.currentPuzzleId = puzzleId;
             this.modalTitle.textContent = puzzle.title;
     
-            if (puzzle.answer === 'clue') {
+            if (puzzle.type === 'clue') {
                 this.puzzleContent.innerHTML = `<p style="font-size: 1.1rem; color: #a6d8ff;">${puzzle.question}</p>`;
                 this.puzzleInput.style.display = 'none';
                 this.submitBtn.style.display = 'none';
-            } else if (puzzle.answer === 'drag-drop') {
+            } else if (puzzle.type === 'drag-drop') {
                  this.puzzleInput.style.display = 'none';
                  this.submitBtn.style.display = 'none';
                  this.loadHtmlPuzzle('../puzzles/puzzle01.html', '.chair-puzzle-container', objectName, this.initChairPuzzle.bind(this), false);
-            } else if (puzzle.answer === 'cabinet-lock') {
+            } else if (puzzle.type === 'cabinet-lock') {
                  this.puzzleInput.style.display = 'none';
                  this.submitBtn.style.display = 'none';
                  this.loadHtmlPuzzle('../puzzles/puzzle02.html', '.cabinet-puzzle-container', objectName, this.initCabinetPuzzle.bind(this), false);
-            } else if (puzzle.answer === 'mirror-code') {
+            } else if (puzzle.type === 'mirror-code') {
                  this.puzzleInput.style.display = 'none';
                  this.submitBtn.style.display = 'none';
                  this.loadHtmlPuzzle('../puzzles/puzzle03.html', '.mirror-puzzle-container', objectName, this.initMirrorPuzzle.bind(this), false);
-            } else if (puzzle.answer === 'storage-clue') {
+            } else if (puzzle.type === 'storage-clue') {
                  this.puzzleInput.style.display = 'none';
                  this.submitBtn.style.display = 'none';
                  this.loadHtmlPuzzle('../puzzles/clue01.html', '.storage-clue-container', objectName, () => {
                      this.completePuzzle('storage-clue');
                  }, false);
-            } else if (puzzle.answer === 'paper-clue') {
+            } else if (puzzle.type === 'paper-clue') {
                  this.puzzleInput.style.display = 'none';
                  this.submitBtn.style.display = 'none';
                  this.loadHtmlPuzzle('../puzzles/clue02.html', '.paper-clue-container', objectName, () => {
@@ -314,7 +314,7 @@ class PuzzleManager {
 
         const checkCompletion = () => {
             const puzzle = puzzles['chair-puzzle'];
-            if (chairStates.join('') === puzzle.correctPatternBinary) {
+            if (chairStates.join('') === puzzle.answer) {
                 this.completePuzzle('chair-puzzle');
                 
                 this.showNotification('창고에서 무슨 소리가 난 것 같다.');
@@ -518,7 +518,7 @@ class PuzzleManager {
                 
                 button.classList.add('selected');
                 
-                if (selectedElement === puzzle.correctAnswer) {
+                if (selectedElement === puzzle.answer) {
                     isAnswered = true;
                     
                     elementChoices.style.display = 'none';
@@ -596,7 +596,7 @@ class PuzzleManager {
                 return;
             }
             
-            if (userAnswer === puzzle.correctAnswer) {
+            if (userAnswer === puzzle.answer) {
                 isAnswered = true;
                 feedback.textContent = '🎉 STAGE1 실험실 CLEAR 🎉';
                 feedback.className = 'puzzle-feedback success show';
