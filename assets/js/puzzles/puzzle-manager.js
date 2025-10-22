@@ -61,6 +61,8 @@ class PuzzleManager {
             return;
         }
 
+        const isSolved = this.currentProgress.completedPuzzles.includes(puzzleId);
+
         const showContent = () => {
             this.currentPuzzleId = puzzleId;
             this.modalTitle.textContent = puzzle.title;
@@ -79,15 +81,15 @@ class PuzzleManager {
             } else if (puzzle.type === 'drag-drop') {
                  this.puzzleInput.style.display = 'none';
                  this.submitBtn.style.display = 'none';
-                 this.loadHtmlPuzzle('../puzzles/puzzle01.html', '.chair-puzzle-container', objectName, this.initChairPuzzle.bind(this), false);
+                 this.loadHtmlPuzzle('../puzzles/puzzle01.html', '.chair-puzzle-container', objectName, () => this.initChairPuzzle(isSolved), false);
             } else if (puzzle.type === 'cabinet-lock') {
                  this.puzzleInput.style.display = 'none';
                  this.submitBtn.style.display = 'none';
-                 this.loadHtmlPuzzle('../puzzles/puzzle02.html', '.cabinet-puzzle-container', objectName, this.initCabinetPuzzle.bind(this), false);
+                 this.loadHtmlPuzzle('../puzzles/puzzle02.html', '.cabinet-puzzle-container', objectName, () => this.initCabinetPuzzle(isSolved), false);
             } else if (puzzle.type === 'mirror-code') {
                  this.puzzleInput.style.display = 'none';
                  this.submitBtn.style.display = 'none';
-                 this.loadHtmlPuzzle('../puzzles/puzzle03.html', '.mirror-puzzle-container', objectName, this.initMirrorPuzzle.bind(this), false);
+                 this.loadHtmlPuzzle('../puzzles/puzzle03.html', '.mirror-puzzle-container', objectName, () => this.initMirrorPuzzle(isSolved), false);
             } else if (puzzle.type === 'storage-clue') {
                  this.puzzleInput.style.display = 'none';
                  this.submitBtn.style.display = 'none';
@@ -220,7 +222,7 @@ class PuzzleManager {
         }
     }
 
-    initChairPuzzle() {
+    initChairPuzzle(isSolved = false) {
         const chairItems = document.querySelectorAll('.chair-item');
         const feedback = document.getElementById('puzzleFeedback');
         const tableCenter = document.querySelector('.table-center');
@@ -230,7 +232,8 @@ class PuzzleManager {
             return;
         }
         
-        let chairStates = [0, 0, 0, 0, 0, 0, 0, 0];
+        const puzzle = puzzles['chair-puzzle'];
+        let chairStates = isSolved ? puzzle.answer.split('').map(Number) : [0, 0, 0, 0, 0, 0, 0, 0];
         
         const tableSize = 140;
         const R_INNER = tableSize * 0.22;
@@ -307,7 +310,12 @@ class PuzzleManager {
         });
 
         const updateUI = () => {
-            feedback.textContent = `CODE: ${chairStates.join('')}`;
+            if (isSolved) {
+                feedback.innerHTML = `CODE: ${chairStates.join('')}<br><br>✅ 이미 완료된 퍼즐입니다`;
+                feedback.className = 'puzzle-feedback success show';
+            } else {
+                feedback.textContent = `CODE: ${chairStates.join('')}`;
+            }
             
             chairItems.forEach((chair) => {
                 const chairNum = parseInt(chair.dataset.chair);
@@ -350,6 +358,7 @@ class PuzzleManager {
 
         chairItems.forEach(chair => {
             chair.addEventListener('click', () => {
+                if (isSolved) return;
                 const chairNum = parseInt(chair.dataset.chair);
                 chairStates[chairNum - 1] = 1 - chairStates[chairNum - 1];
                 updateUI();
@@ -358,7 +367,11 @@ class PuzzleManager {
         
         const confirmBtn = document.getElementById('confirmChairPuzzle');
         if (confirmBtn) {
-            confirmBtn.addEventListener('click', checkCompletion);
+            if (isSolved) {
+                confirmBtn.style.display = 'none';
+            } else {
+                confirmBtn.addEventListener('click', checkCompletion);
+            }
         }
 
         if (tableCenter) {
@@ -512,7 +525,7 @@ class PuzzleManager {
         }, duration);
     }
 
-    initCabinetPuzzle() {
+    initCabinetPuzzle(isSolved = false) {
         const elementButtons = document.querySelectorAll('.element-btn');
         const feedback = document.getElementById('puzzleFeedback');
         const elementChoices = document.getElementById('elementChoices');
@@ -524,7 +537,20 @@ class PuzzleManager {
         }
 
         const puzzle = puzzles['cabinet-puzzle'];
-        let isAnswered = false;
+        let isAnswered = isSolved;
+
+        if (isSolved) {
+            elementButtons.forEach(btn => {
+                if (btn.dataset.element === puzzle.answer) {
+                    btn.classList.add('selected');
+                }
+                btn.style.pointerEvents = 'none';
+                btn.style.opacity = '0.7';
+            });
+            feedback.textContent = '✅ 이미 완료된 퍼즐입니다';
+            feedback.className = 'puzzle-feedback success show';
+            return;
+        }
 
         elementButtons.forEach(button => {
             button.addEventListener('click', () => {
@@ -580,7 +606,7 @@ class PuzzleManager {
         });
     }
 
-    initMirrorPuzzle() {
+    initMirrorPuzzle(isSolved = false) {
         const feedback = document.getElementById('puzzleFeedback');
         const codeInput = document.getElementById('mirrorCodeInput');
         const confirmBtn = document.getElementById('confirmMirrorPuzzle');
@@ -591,7 +617,24 @@ class PuzzleManager {
         }
 
         const puzzle = puzzles['mirror-puzzle'];
-        let isAnswered = false;
+        let isAnswered = isSolved;
+
+        if (isSolved) {
+            const answer = puzzle.answer;
+            let formattedAnswer = '';
+            for (let i = 0; i < answer.length; i++) {
+                if (i > 0) {
+                    formattedAnswer += ' ';
+                }
+                formattedAnswer += answer[i];
+            }
+            codeInput.value = formattedAnswer;
+            codeInput.disabled = true;
+            confirmBtn.style.display = 'none';
+            feedback.textContent = '✅ 이미 완료된 퍼즐입니다';
+            feedback.className = 'puzzle-feedback success show';
+            return;
+        }
 
         codeInput.addEventListener('input', (e) => {
             let value = e.target.value.replace(/[^0-9]/g, '');
