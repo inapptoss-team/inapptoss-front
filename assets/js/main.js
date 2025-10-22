@@ -48,31 +48,7 @@ window.unlockAll = () => {
 };
 
 document.addEventListener('DOMContentLoaded', () => {
-  const startBtn = document.querySelector('[data-action="start"]');
-  const labBtn = document.querySelector('[data-action="lab"]');
-  const backgroundBtn = document.querySelector('[data-action="background"]');
   const lockedBtns = document.querySelectorAll('[data-locked="true"]');
-
-  if (startBtn) {
-    startBtn.addEventListener('click', (e) => {
-      e.preventDefault();
-      window.location.href = './assets/lab/';
-    });
-  }
-
-  if (labBtn) {
-    labBtn.addEventListener('click', (e) => {
-      e.preventDefault();
-      window.location.href = './lab/';
-    });
-  }
-
-  if (backgroundBtn) {
-    backgroundBtn.addEventListener('click', (e) => {
-      e.preventDefault();
-      window.location.href = './background/';
-    });
-  }
 
   lockedBtns.forEach((btn) => {
     btn.addEventListener('click', (e) => {
