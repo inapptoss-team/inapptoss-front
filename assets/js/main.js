@@ -7,6 +7,34 @@ import puzzleManager from './puzzles/puzzle-manager.js';
 
 window.puzzleManager = puzzleManager;
 
+function showComingSoonModal(message) {
+  const modal = document.createElement('div');
+  modal.innerHTML = `
+    <div style="font-size: 1.5rem; margin-bottom: 0.5rem;">🚧</div>
+    <div style="white-space: nowrap; margin-bottom: 1rem;">${message}</div>
+    <button class="confirm-btn">확인</button>
+  `;
+  modal.style.cssText = `
+    position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+    background: linear-gradient(135deg, rgba(26, 42, 71, 0.95), rgba(16, 32, 51, 0.98));
+    border: 2px solid rgba(100, 180, 255, 0.4); border-radius: 12px; padding: 1.5rem;
+    color: #e6f3ff; font-size: 0.95rem; text-align: center;
+    box-shadow: 0 0 30px rgba(57, 127, 255, 0.5), 0 20px 60px rgba(0, 0, 0, 0.7);
+    z-index: 10000;
+  `;
+
+  const btn = modal.querySelector('.confirm-btn');
+  btn.style.cssText = `
+    padding: 0.5rem 1.5rem; font-size: 0.9rem; font-weight: 600; color: #e6f3ff;
+    background: linear-gradient(135deg, rgba(80, 140, 255, 0.3), rgba(60, 120, 235, 0.4));
+    border: 1px solid rgba(100, 180, 255, 0.5); border-radius: 50px;
+    cursor: pointer; transition: all 0.2s ease;
+  `;
+
+  btn.addEventListener('click', () => modal.remove());
+  document.body.appendChild(modal);
+}
+
 window.resetProgress = () => {
   window.puzzleManager.resetProgress();
 };
@@ -59,6 +87,26 @@ document.addEventListener('DOMContentLoaded', () => {
     exploreBtn.addEventListener('click', (e) => {
       e.preventDefault();
       window.location.href = './assets/lab/intro.html';
+    });
+  }
+
+  const progress = puzzleManager.loadProgress();
+  if (progress.completedPuzzles.includes('mirror-puzzle')) {
+    const stageButtons = document.querySelectorAll('.stage-item .btn');
+    stageButtons.forEach((btn) => {
+      if (btn.textContent.trim() === '학사') {
+        btn.classList.remove('locked');
+        btn.removeAttribute('data-locked');
+        btn.classList.add('active', 'explore-btn');
+        
+        const newBtn = btn.cloneNode(true);
+        btn.parentNode.replaceChild(newBtn, btn);
+        
+        newBtn.addEventListener('click', (e) => {
+          e.preventDefault();
+          showComingSoonModal('학사 스테이지는 준비 중입니다.');
+        });
+      }
     });
   }
 
