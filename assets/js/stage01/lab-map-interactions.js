@@ -20,4 +20,14 @@ document.addEventListener('DOMContentLoaded', () => {
     setupInteraction('.map-storage', 'storage-clue');
     setupInteraction('.map-cabinet', 'cabinet-puzzle');
     setupInteraction('.map-paper', 'paper-clue');
+
+    if (window.puzzleManager) {
+        const progress = window.puzzleManager.loadProgress();
+        if (progress.completedPuzzles.includes('cabinet-puzzle')) {
+            const paperElement = document.querySelector('.map-paper');
+            if (paperElement) {
+                paperElement.style.display = 'block';
+            }
+        }
+    }
 });

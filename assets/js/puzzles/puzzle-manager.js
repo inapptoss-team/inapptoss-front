@@ -1,4 +1,5 @@
 import { puzzles } from './puzzle-data.js';
+import { showStageClearAnimation } from '../map/stage-clear.js';
 
 class PuzzleManager {
     constructor() {
@@ -163,6 +164,18 @@ class PuzzleManager {
                 paperElement.style.display = 'block';
             }
             this.completePuzzle('cabinet-puzzle');
+        } else if (sceneType === 'mirror-unlocked') {
+            this.hide();
+            
+            showStageClearAnimation(
+                '../img/학사복도.png',
+                '🔓',
+                '학사로 가는 길을 발견했습니다.',
+                5000,
+                () => {
+                    window.location.href = '/index.html';
+                }
+            );
         }
     }
 
@@ -623,12 +636,12 @@ class PuzzleManager {
                 isAnswered = true;
                 feedback.textContent = '🎉 STAGE1 실험실 CLEAR 🎉';
                 feedback.className = 'puzzle-feedback success show';
+                feedback.style.whiteSpace = 'nowrap';
                 codeInput.disabled = true;
                 
                 this.completePuzzle('mirror-puzzle');
                 
                 setTimeout(() => {
-                    this.hide();
                     if (puzzle.nextScene) {
                         this.handleNextScene(puzzle.nextScene);
                     }

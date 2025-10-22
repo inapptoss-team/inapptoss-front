@@ -1069,7 +1069,7 @@ body{
 /* Intro animation styles */
 .intro-content {
   position: absolute;
-  top: 40%;
+  top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
   width: 80%;
@@ -1084,6 +1084,27 @@ body{
 
 .news-ticker, .summary {
     word-break: keep-all;
+}
+
+.start-game-btn {
+  display: block;
+  margin: 2rem auto 0;
+  padding: 0.8rem 2rem;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #e6f3ff;
+  background: linear-gradient(135deg, rgba(80, 140, 255, 0.3), rgba(60, 120, 235, 0.4));
+  border: 2px solid rgba(100, 180, 255, 0.5);
+  border-radius: 50px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  font-family: 'Poppins', sans-serif;
+}
+
+.start-game-btn:active {
+  transform: scale(0.95);
+  background: linear-gradient(135deg, rgba(100, 160, 255, 0.5), rgba(80, 140, 255, 0.6));
+  box-shadow: 0 0 25px rgba(100, 180, 255, 0.5);
 }
 
 .cursor {
