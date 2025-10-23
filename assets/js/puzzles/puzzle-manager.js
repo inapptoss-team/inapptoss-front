@@ -167,6 +167,7 @@ class PuzzleManager {
             this.modalTitle.textContent = puzzle.title;
             
             const modalContent = document.querySelector('.modal-content');
+            modalContent.classList.remove('image-clue-modal-style');
             if (puzzle.type === 'drag-drop' || puzzle.type === 'cabinet-lock' || puzzle.type === 'mirror-code') {
                 modalContent.classList.add('has-puzzle');
             } else {
@@ -201,6 +202,16 @@ class PuzzleManager {
                  this.loadHtmlPuzzle('../puzzles/clue02.html', '.paper-clue-container', objectName, () => {
                      this.completePuzzle('paper-clue');
                  }, false);
+            } else if (puzzle.type === 'image-clue') {
+                modalContent.classList.add('image-clue-modal-style');
+                this.puzzleContent.innerHTML = `
+                    <p class="image-clue-question">${puzzle.question}</p>
+                    <div class="image-clue-container">
+                        <img src="${puzzle.imageUrl}" alt="${puzzle.title}" class="clue-image">
+                    </div>
+                `;
+                this.puzzleInput.style.display = 'none';
+                this.submitBtn.style.display = 'none';
             } else {
                 this.puzzleContent.innerHTML = `
                     <p>${puzzle.question}</p>`;
