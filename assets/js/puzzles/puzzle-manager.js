@@ -1,5 +1,6 @@
 import { puzzles } from './puzzle-data.js';
 import { showStageClearAnimation } from '../map/stage-clear.js';
+import { makeDraggable } from '../map/drag-and-drop.js';
 
 class PuzzleManager {
     constructor() {
@@ -22,6 +23,71 @@ class PuzzleManager {
         this.currentProgress = this.loadProgress();
 
         this.attachEventListeners();
+    }
+
+    showConfirmation(options) {
+        const {
+            title = '확인',
+            message,
+            confirmText = '예',
+            cancelText = '아니오',
+            onConfirm,
+            onCancel
+        } = options;
+    
+        this.modalTitle.textContent = title;
+        this.puzzleContent.innerHTML = `<p>${message}</p>`;
+        this.puzzleInput.style.display = 'none';
+        this.submitBtn.style.display = 'inline-block';
+        this.submitBtn.textContent = confirmText;
+    
+        const puzzleActions = this.submitBtn.parentElement;
+        
+        let cancelBtn = puzzleActions.querySelector('.cancel-btn-dynamic');
+        if (cancelBtn) {
+            cancelBtn.remove();
+        }
+    
+        cancelBtn = document.createElement('button');
+        cancelBtn.textContent = cancelText;
+        cancelBtn.className = 'submit-btn cancel-btn-dynamic';
+        puzzleActions.appendChild(cancelBtn);
+    
+        const cleanup = () => {
+            this.submitBtn.onclick = null;
+            if(cancelBtn.parentNode) {
+                cancelBtn.remove();
+            }
+            document.removeEventListener('keydown', keydownHandler);
+            this.attachEventListeners(); // Re-attach original listeners
+        };
+
+        const confirmHandler = () => {
+            cleanup();
+            if (onConfirm) onConfirm();
+        };
+    
+        const cancelHandler = () => {
+            cleanup();
+            this.hide();
+            if (onCancel) onCancel();
+        };
+    
+        const keydownHandler = (e) => {
+            if (e.key === 'Enter') {
+                confirmHandler();
+            } else if (e.key === 'Escape') {
+                cancelHandler();
+            }
+        };
+    
+        this.submitBtn.onclick = confirmHandler;
+        cancelBtn.onclick = cancelHandler;
+        document.addEventListener('keydown', keydownHandler);
+    
+        if (!this.puzzleModal.classList.contains('show')) {
+            this.puzzleModal.classList.add('show');
+        }
     }
 
     attachEventListeners() {
@@ -47,7 +113,16 @@ class PuzzleManager {
         }
     }
 
-    show(puzzleId, objectName = '오브젝트') {
+    show(puzzleId, objectName = '오브젝트', options = {}) {
+        // 동적으로 추가된 '아니오' 버튼이 남아있을 경우를 대비해 제거
+        const puzzleActions = this.submitBtn.parentElement;
+        if (puzzleActions) {
+            const existingCancelBtn = puzzleActions.querySelector('.cancel-btn-dynamic');
+            if (existingCancelBtn) {
+                existingCancelBtn.remove();
+            }
+        }
+        
         const isLocked = this.isPuzzleLocked(puzzleId);
         
         if (isLocked) {
@@ -58,6 +133,30 @@ class PuzzleManager {
         const puzzle = puzzles[puzzleId];
         if (!puzzle) {
             console.error(`Puzzle with id "${puzzleId}" not found.`);
+            return;
+        }
+
+        if (puzzleId === 'mirror-puzzle' && !options.forceShow) {
+            const isPaperAvailable = this.currentProgress.completedPuzzles.includes('cabinet-puzzle');
+            if (!isPaperAvailable) {
+                this.showLockedWithHandler(puzzleId);
+                return;
+            }
+            const isSolved = this.currentProgress.completedPuzzles.includes(puzzleId);
+            if(isSolved){
+                this.show(puzzleId, objectName, { forceShow: true });
+                return;
+            }
+
+            this.showConfirmation({
+                title: '거울',
+                message: '종이를 거울에 비추시겠습니까?',
+                confirmText: '확인',
+                cancelText: '취소',
+                onConfirm: () => {
+                    this.show(puzzleId, objectName, { forceShow: true, usePaper: true });
+                }
+            });
             return;
         }
 
@@ -89,7 +188,7 @@ class PuzzleManager {
             } else if (puzzle.type === 'mirror-code') {
                  this.puzzleInput.style.display = 'none';
                  this.submitBtn.style.display = 'none';
-                 this.loadHtmlPuzzle('../puzzles/puzzle03.html', '.mirror-puzzle-container', objectName, () => this.initMirrorPuzzle(isSolved), false);
+                 this.loadHtmlPuzzle('../puzzles/puzzle03.html', '.mirror-puzzle-container', objectName, () => this.initMirrorPuzzle(isSolved, options), false);
             } else if (puzzle.type === 'storage-clue') {
                  this.puzzleInput.style.display = 'none';
                  this.submitBtn.style.display = 'none';
@@ -164,6 +263,7 @@ class PuzzleManager {
             const paperElement = document.querySelector('.map-paper');
             if (paperElement) {
                 paperElement.style.display = 'block';
+                makeDraggable(paperElement, this, { dropTarget: '.map-mirror', dropPuzzleId: 'mirror-puzzle' });
             }
             this.completePuzzle('cabinet-puzzle');
         } else if (sceneType === 'mirror-unlocked') {
@@ -606,7 +706,7 @@ class PuzzleManager {
         });
     }
 
-    initMirrorPuzzle(isSolved = false) {
+    initMirrorPuzzle(isSolved = false, options = {}) {
         const feedback = document.getElementById('puzzleFeedback');
         const codeInput = document.getElementById('mirrorCodeInput');
         const confirmBtn = document.getElementById('confirmMirrorPuzzle');
@@ -614,6 +714,17 @@ class PuzzleManager {
         if (!feedback || !codeInput || !confirmBtn) {
             console.error("Mirror puzzle elements not found");
             return;
+        }
+
+        if (options.usePaper) {
+            const hint = document.getElementById('flippedPaperHint');
+            if (hint) {
+                hint.style.display = 'block';
+            }
+            const mirrorImageContainer = document.querySelector('.mirror-image-container');
+            if (mirrorImageContainer) {
+                mirrorImageContainer.style.display = 'none';
+            }
         }
 
         const puzzle = puzzles['mirror-puzzle'];
@@ -705,10 +816,16 @@ class PuzzleManager {
 
     loadProgress() {
         const saved = localStorage.getItem('puzzle-progress');
-        return saved ? JSON.parse(saved) : {
+        const progress = saved ? JSON.parse(saved) : {
             completedPuzzles: [],
-            currentStep: 0
+            currentStep: 0,
+            draggablePositions: {}
         };
+        // Ensure draggablePositions exists
+        if (!progress.draggablePositions) {
+            progress.draggablePositions = {};
+        }
+        return progress;
     }
     
     saveProgress() {
@@ -772,7 +889,8 @@ class PuzzleManager {
     resetProgress() {
         this.currentProgress = {
             completedPuzzles: [],
-            currentStep: 0
+            currentStep: 0,
+            draggablePositions: {}
         };
         this.saveProgress();
         console.log('진행 상태가 리셋되었습니다.');
@@ -786,10 +904,20 @@ class PuzzleManager {
     unlockAll() {
         this.currentProgress = {
             completedPuzzles: this.puzzleOrder,
-            currentStep: this.puzzleOrder.length
+            currentStep: this.puzzleOrder.length,
+            draggablePositions: this.currentProgress.draggablePositions || {}
         };
         this.saveProgress();
         console.log('모든 퍼즐이 잠금 해제되었습니다.');
+    }
+
+    saveDraggablePosition(id, position) {
+        this.currentProgress.draggablePositions[id] = position;
+        this.saveProgress();
+    }
+
+    getDraggablePosition(id) {
+        return this.currentProgress.draggablePositions[id];
     }
 }
 
