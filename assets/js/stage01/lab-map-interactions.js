@@ -22,6 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
     setupInteraction('.map-storage', 'storage-clue');
     setupInteraction('.map-cabinet', 'cabinet-puzzle');
     setupInteraction('.map-paper', 'paper-clue');
+    setupInteraction('.map-periodic-table', 'periodic-table-clue');
 
     if (window.puzzleManager) {
         const progress = window.puzzleManager.loadProgress();
