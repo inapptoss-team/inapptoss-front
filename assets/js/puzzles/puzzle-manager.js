@@ -422,7 +422,7 @@ class PuzzleManager {
 
         const updateUI = () => {
             if (isSolved) {
-                feedback.innerHTML = `CODE: ${chairStates.join('')}<br><br>✅ 이미 완료된 퍼즐입니다`;
+                feedback.innerHTML = `CODE: ${chairStates.join('')}<br><br>이미 완료된 퍼즐입니다`;
                 feedback.className = 'puzzle-feedback success show';
             } else {
                 feedback.textContent = `CODE: ${chairStates.join('')}`;
@@ -586,7 +586,7 @@ class PuzzleManager {
                 });
                 
                 const hintText = document.createElement('p');
-                hintText.textContent = '책상 위에는 "시계의 두 손이 가리키는 곳, 9시와 3시를 기억해..."라고 적힌 메모가 놓여 있다.';
+                hintText.textContent = '책상 위에는 ‘시계의 두 손이 가리키는 곳, 9시와 3시는 비워두어야 한다…’ 라고 적힌 메모가 놓여 있다.';
                 hintText.style.cssText = `
                     margin: 0;
                     word-break: keep-all;
@@ -666,7 +666,7 @@ class PuzzleManager {
                 btn.style.pointerEvents = 'none';
                 btn.style.opacity = '0.7';
             });
-            feedback.textContent = '✅ 이미 완료된 퍼즐입니다';
+            feedback.textContent = '이미 완료된 퍼즐입니다';
             feedback.className = 'puzzle-feedback success show';
             return;
         }
@@ -761,7 +761,7 @@ class PuzzleManager {
             codeInput.value = formattedAnswer;
             codeInput.disabled = true;
             confirmBtn.style.display = 'none';
-            feedback.textContent = '✅ 이미 완료된 퍼즐입니다';
+            feedback.textContent = '이미 완료된 퍼즐입니다';
             feedback.className = 'puzzle-feedback success show';
             return;
         }
@@ -807,7 +807,7 @@ class PuzzleManager {
             
             if (userAnswer === puzzle.answer) {
                 isAnswered = true;
-                feedback.textContent = '🎉 STAGE1 실험실 CLEAR 🎉';
+                feedback.innerHTML = 'STAGE 1 CLEAR<br>실험실을 탈출했습니다!';
                 feedback.className = 'puzzle-feedback success show';
                 feedback.style.whiteSpace = 'nowrap';
                 codeInput.disabled = true;
