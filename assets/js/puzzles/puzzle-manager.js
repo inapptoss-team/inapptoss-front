@@ -476,6 +476,14 @@ class PuzzleManager {
 
         if (tableCenter) {
             tableCenter.style.cursor = 'pointer';
+
+            setTimeout(() => {
+                tableCenter.classList.add('shining-effect');
+                setTimeout(() => {
+                    tableCenter.classList.remove('shining-effect');
+                }, 3000); 
+            }, 2000);
+
             tableCenter.addEventListener('click', () => {
                 const existingOverlay = document.querySelector('.hint-overlay');
                 if (existingOverlay) {

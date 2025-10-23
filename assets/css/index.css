@@ -572,6 +572,19 @@ body{
   border-radius: 50%;
 }
 
+@keyframes shine {
+  0%, 100% {
+    box-shadow: 0 0 8px rgba(255, 223, 186, 0.6), 0 0 12px rgba(255, 223, 186, 0.6);
+  }
+  50% {
+    box-shadow: 0 0 24px rgba(255, 223, 186, 1), 0 0 36px rgba(255, 223, 186, 1);
+  }
+}
+
+.shining-effect {
+  animation: shine 1.5s ease-in-out 2;
+}
+
 .drop-zone {
   position: absolute;
   width: 26px;
