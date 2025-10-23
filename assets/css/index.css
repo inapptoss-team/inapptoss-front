@@ -427,7 +427,11 @@ body{
 
 .map-paper {
   top: 40%; left: 10%; width: 8%; height: 12%;
-  background-color: rgba(255, 255, 255, 0.6); border: 2px solid #ffffff;
+  background: url('../img/종이.png') no-repeat center center;
+  background-size: contain;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+  cursor: grab;
 }
 
 
@@ -489,7 +493,12 @@ body{
   color:#e6f3ff; cursor:pointer; font-weight:600;
 }
 
-.puzzle-container {
+.cancel-btn-dynamic {
+    background: #4a5568;
+    border-color: #718096;
+}
+ 
+ .puzzle-container {
   display: flex;
   justify-content: center;
   align-items: center;
