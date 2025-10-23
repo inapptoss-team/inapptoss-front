@@ -1,3 +1,5 @@
+import { makeDraggable } from '../map/drag-and-drop.js';
+
 const loadHtmlPuzzle = (puzzleId) => {
     if (window.puzzleManager) {
         window.puzzleManager.show(puzzleId);
@@ -23,10 +25,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (window.puzzleManager) {
         const progress = window.puzzleManager.loadProgress();
+        const paperElement = document.querySelector('.map-paper');
+
         if (progress.completedPuzzles.includes('cabinet-puzzle')) {
-            const paperElement = document.querySelector('.map-paper');
             if (paperElement) {
                 paperElement.style.display = 'block';
+                makeDraggable(paperElement, window.puzzleManager, { dropTarget: '.map-mirror', dropPuzzleId: 'mirror-puzzle' });
             }
         }
     }
