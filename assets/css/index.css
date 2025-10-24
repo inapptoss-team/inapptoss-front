@@ -327,7 +327,6 @@ body{
 /* Map interactive areas */
 .interactive-areas .interactive-btn {
   position: absolute;
-  border-radius: 8px;
   cursor: pointer;
   color: white;
   font-size: 14px;
@@ -386,7 +385,7 @@ body{
   left: 0;
   width: 100%;
   height: 100%;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath d='M 10,0 L 90,-75 L 90,75 L 10,180 Z' fill='rgba(166, 216, 255, 0.3)' stroke='%23A6D8FF' stroke-width='2' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath d='M 10,0 L 90,-75 L 90,75 L 10,180 Z' fill='rgba(95, 128, 145, 0.6)' stroke='%235f8091' stroke-width='2' stroke-linejoin='round'/%3E%3C/svg%3E");
   background-size: 100% 100%;
   background-repeat: no-repeat;
   background-position: center;
@@ -396,14 +395,16 @@ body{
 
 .map-storage {
   top: 18%; left: 42%; width: 30%; height: 32%;
-  background-color: rgba(160, 160, 160, 0.4); border: 2px solid #a0a0a0;
+  background-color: rgba(95, 128, 145, 0.4);
+  border: 2px solid #5f8091;
+  border-radius: 8px;
 }
 
 .map-desk {
   bottom: 3%; right: 0%; width: 73%; height: 42%;
-  /* background-color: rgba(255, 255, 0, 0.4); border: 2px solid #a0a0a0; */
-  background-color: rgba(95, 128, 145, 0.4); border: 2px solid #a0a0a0;
-
+  background-color: rgba(95, 128, 145, 0.4);
+  border: 2px solid #5f8091;
+  border-radius: 8px;
 }
 
 .map-cabinet {
@@ -419,7 +420,7 @@ body{
   left: 0;
   width: 100%;
   height: 100%;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpolygon points='0,20 90,-190 90,30 0,300' fill='rgba(160, 120, 90, 0.4)' stroke='%23A0785A' stroke-width='2'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpolygon points='0,20 90,-190 90,30 0,300' fill='rgba(95, 128, 145, 0.6)' stroke='%235f8091' stroke-width='2'/%3E%3C/svg%3E");
   background-size: 100% 100%;
   background-repeat: no-repeat;
   background-position: center;
@@ -428,18 +429,26 @@ body{
 }
 
 .map-periodic-table {
-  top: 25%;
-  left: 28%;
-  width: 10%;
-  height: 15%;
+  top: 21%;
+  left: 27%;
+  width: 14%;
+  height: 11%;
+  background-color: rgba(95, 128, 145, 0.4);
+  border: 2px solid #5f8091;
+  border-radius: 8px;
 }
 
 .map-paper {
-  top: 40%; left: 10%; width: 8%; height: 12%;
-  background: url('../img/종이.png') no-repeat center center;
+  top: 40%; left: 10%; width: 10%;
+  aspect-ratio: 1 / 1;
+  background-color: rgba(95, 128, 145, 0.4);
+  background-image: url('../img/구겨진종이.png');
+  background-repeat: no-repeat;
+  background-position: center center;
   background-size: contain;
-  border: 1px solid rgba(255, 255, 255, 0.5);
-  box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+  border: 2px solid #5f8091;
+  border-radius: 50%;
+  box-shadow: 0 0 10px rgba(95, 128, 145, 0.3);
   cursor: grab;
 }
 
@@ -466,31 +475,6 @@ body{
   margin: 0 auto;
 }
 
-.modal-content.image-clue-modal-style {
-  width: auto;
-  max-width: min(500px, 90vw);
-}
-
-.image-clue-question {
-  text-align: center;
-  margin-bottom: 1rem;
-  color: #a6d8ff;
-}
-
-.image-clue-container {
-  margin-top: 0.5rem;
-}
-
-.clue-image {
-  display: block;
-  margin: 0 auto;
-  max-width: 100%;
-  height: auto;
-  border-radius: 8px;
-  border: 1px solid rgba(100, 180, 255, 0.2);
-  padding: 5px;
-  background-color: rgba(0,0,0,0.2);
-}
 
 .modal-content.has-puzzle {
   height: auto;
@@ -499,7 +483,7 @@ body{
 
 .modal-header{
   display:flex; justify-content:space-between; align-items:center;
-  padding:0.75rem 1rem; border-bottom:1px solid rgba(255,255,255,.1);
+  padding:0.4rem 1rem; border-bottom:1px solid rgba(255,255,255,.1);
 }
 
 .modal-title{
@@ -512,8 +496,8 @@ body{
   cursor:pointer; padding:0.5rem;
 }
 
-.modal-body{ padding:0.75rem; }
-.puzzle-content{ margin-bottom:0.5rem; line-height:1.5; transition: opacity 0.3s ease; }
+.modal-body{ padding: 1rem; }
+.puzzle-content{ line-height:1.5; transition: opacity 0.3s ease; }
 
 .puzzle-actions{ display:flex; gap:1rem; align-items:center; }
 .puzzle-input{
@@ -547,26 +531,35 @@ body{
   overflow: hidden;
 }
 
-.chair-puzzle-container {
+.puzzle-container > div {
   color: #fff;
   text-align: center;
 }
 
+.modal-body h3 {
+  margin: 0;
+  font-size: clamp(16px, 4vw, 18px);
+  color: #64b4ff;
+}
+
+.modal-body p {
+  font-size: clamp(12px, 3vw, 14px);
+  color: #a2b3d6;
+  margin-bottom: 12px;
+}
+
+/* Chair Puzzle Styles */
 .chair-puzzle-container h3 {
   margin-bottom: 8px;
-  font-size: 16px;
 }
 
 .chair-puzzle-container p {
   margin-bottom: 3rem;
-  font-size: 12px;
-  color: #a2b3d6;
 }
 
 .chair-puzzle-container .puzzle-feedback {
   display: block;
   margin-top: 3rem;
-  padding-bottom: 0.5rem;
 }
 
 .puzzle-area {
@@ -754,23 +747,6 @@ body{
 }
 
 /* Cabinet Puzzle Styles */
-.cabinet-puzzle-container {
-  color: #fff;
-  text-align: center;
-}
-
-.cabinet-puzzle-container h3 {
-  margin-bottom: 4px;
-  font-size: clamp(16px, 4vw, 20px);
-  color: #64b4ff;
-}
-
-.cabinet-puzzle-container p {
-  margin-bottom: 20px;
-  font-size: clamp(12px, 3vw, 14px);
-  color: #a2b3d6;
-}
-
 .cabinet-puzzle-container .puzzle-feedback {
   min-height: 0;
   margin-top: 0.5rem;
@@ -781,7 +757,6 @@ body{
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 1rem;
 }
 
 .lock-image-container {
@@ -815,6 +790,7 @@ body{
   width: 100%;
   max-width: 280px;
   align-items: flex-start;
+  margin-top: 1rem;
 }
 
 .element-btn {
@@ -826,7 +802,7 @@ body{
   color: #a6d8ff;
   font-size: 0.85rem;
   font-weight: 400;
-  padding: 0.3rem 1rem;
+  padding: 0.3rem 0.5rem;
   cursor: pointer;
   transition: all 0.2s ease;
   text-align: left;
@@ -862,29 +838,12 @@ body{
 }
 
 /* Storage Clue Styles */
-.storage-clue-container {
-  color: #fff;
-  text-align: center;
-}
-
-.storage-clue-container h3 {
-  margin-bottom: 4px;
-  font-size: clamp(16px, 4vw, 20px);
-  color: #64b4ff;
-}
-
-.storage-clue-container p {
-  margin-bottom: 12px;
-  font-size: clamp(12px, 3vw, 14px);
-  color: #a2b3d6;
-}
-
 .materials-display {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 0.5rem;
-  margin: 1.5rem 0;
+  margin: 1.3rem 0;
 }
 
 .materials-row {
@@ -937,23 +896,6 @@ body{
 }
 
 /* Paper Clue Styles */
-.paper-clue-container {
-  color: #fff;
-  text-align: center;
-}
-
-.paper-clue-container h3 {
-  margin-bottom: 4px;
-  font-size: clamp(16px, 4vw, 20px);
-  color: #64b4ff;
-}
-
-.paper-clue-container p {
-  margin-bottom: 12px;
-  font-size: clamp(12px, 3vw, 14px);
-  color: #a2b3d6;
-}
-
 .paper-image-container {
   display: flex;
   justify-content: center;
@@ -987,6 +929,37 @@ body{
   transform: scale(1.05);
 }
 
+/* Periodic Table Clue Styles */
+.periodic-table-image-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 0.75rem;
+  padding: 0.75rem;
+  background: linear-gradient(135deg, rgba(16, 32, 51, 0.6), rgba(26, 42, 71, 0.7));
+  border: 2px solid rgba(100, 180, 255, 0.3);
+  border-radius: 12px;
+  box-shadow: 
+    0 0 20px rgba(100, 180, 255, 0.2),
+    inset 0 2px 8px rgba(0, 0, 0, 0.3);
+  width: fit-content;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.periodic-table-image {
+  max-width: 100%;
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  filter: drop-shadow(0 0 10px rgba(100, 180, 255, 0.3));
+  transition: transform 0.3s ease;
+}
+
+.periodic-table-image:hover {
+  transform: scale(1.05);
+}
+
 .mirror-hint {
   background: linear-gradient(135deg, rgba(16, 32, 51, 0.6), rgba(26, 42, 71, 0.7));
   border: 2px solid rgba(100, 180, 255, 0.3);
@@ -1004,23 +977,6 @@ body{
 }
 
 /* Mirror Puzzle Styles */
-.mirror-puzzle-container {
-  color: #fff;
-  text-align: center;
-}
-
-.mirror-puzzle-container h3 {
-  margin-bottom: 4px;
-  font-size: clamp(16px, 4vw, 20px);
-  color: #64b4ff;
-}
-
-.mirror-puzzle-container p {
-  margin-bottom: 20px;
-  font-size: clamp(12px, 3vw, 14px);
-  color: #a2b3d6;
-}
-
 .mirror-puzzle-container .puzzle-feedback {
   max-width: 200px;
   margin-left: auto;
