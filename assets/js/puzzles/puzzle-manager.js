@@ -59,7 +59,7 @@ class PuzzleManager {
                 cancelBtn.remove();
             }
             document.removeEventListener('keydown', keydownHandler);
-            this.attachEventListeners(); // Re-attach original listeners
+            this.attachEventListeners();
         };
 
         const confirmHandler = () => {
@@ -792,7 +792,7 @@ class PuzzleManager {
                 let formattedValue = '';
                 for (let i = 0; i < value.length; i++) {
                     if (i > 0 && i < value.length) {
-                        formattedValue += '  '; // 공백 2개
+                        formattedValue += '  ';
                     }
                     formattedValue += value[i];
                 }
@@ -860,7 +860,6 @@ class PuzzleManager {
             currentStep: 0,
             draggablePositions: {}
         };
-        // Ensure draggablePositions exists
         if (!progress.draggablePositions) {
             progress.draggablePositions = {};
         }
