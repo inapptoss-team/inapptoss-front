@@ -202,16 +202,12 @@ class PuzzleManager {
                  this.loadHtmlPuzzle('../puzzles/clue02.html', '.paper-clue-container', objectName, () => {
                      this.completePuzzle('paper-clue');
                  }, false);
-            } else if (puzzle.type === 'image-clue') {
-                modalContent.classList.add('image-clue-modal-style');
-                this.puzzleContent.innerHTML = `
-                    <p class="image-clue-question">${puzzle.question}</p>
-                    <div class="image-clue-container">
-                        <img src="${puzzle.imageUrl}" alt="${puzzle.title}" class="clue-image">
-                    </div>
-                `;
-                this.puzzleInput.style.display = 'none';
-                this.submitBtn.style.display = 'none';
+            } else if (puzzle.type === 'periodic-table-clue') {
+                 this.puzzleInput.style.display = 'none';
+                 this.submitBtn.style.display = 'none';
+                 this.loadHtmlPuzzle('../puzzles/clue03.html', '.periodic-table-clue-container', objectName, () => {
+                     this.completePuzzle('periodic-table-clue');
+                 }, false);
             } else {
                 this.puzzleContent.innerHTML = `
                     <p>${puzzle.question}</p>`;

@@ -36,7 +36,6 @@ export const puzzles = {
     'periodic-table-clue': {
         title: '주기율표',
         question: '주기율표와 단서를 대조해보자',
-        type: 'image-clue',
-        imageUrl: '../img/주기율표.png'
+        type: 'periodic-table-clue'
     }
 };
