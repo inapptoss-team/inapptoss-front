@@ -10,13 +10,13 @@
     <main class="puzzle-container">
         <div class="mirror-puzzle-container" id="mirrorPuzzleContainer">
           <h3>거울 속의 비밀</h3>
-          <p>각 원소의 원자번호를 순서대로 입력하세요.</p>
+          <p>종이를 가져와야 거울 속의 비밀을 풀 수 있다.</p>
           
-          <div id="flippedPaperHint" style="display: none; margin-bottom: 1rem;">
-            <p style="font-size: 0.9rem; color: #a6d8ff;">거울에 비친 종이에는 다음과 같이 적혀있다.</p>
+          <div id="flippedPaperHint">
             <div class="paper-image-container">
-              <img src="../img/종이.png" alt="뒤집힌 종이" class="paper-image" style="transform: scaleX(-1);">
+              <img src="../img/종이.png" alt="뒤집힌 종이" class="paper-image flipped">
             </div>
+            <p>각 원소의 원자번호를 순서대로 입력하세요.</p>
           </div>
 
           <div class="puzzle-area">
@@ -26,7 +26,7 @@
               </div>
               
               <div class="mirror-input-area">
-                <input type="text" class="mirror-code-input" id="mirrorCodeInput" maxlength="7" placeholder="_ _ _ _" autocomplete="off">
+                <input type="text" class="mirror-code-input" id="mirrorCodeInput" maxlength="9" placeholder="_  _  _  _" autocomplete="off">
               </div>
               
               <div class="puzzle-feedback" id="puzzleFeedback"></div>

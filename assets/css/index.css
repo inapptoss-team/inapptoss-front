@@ -499,7 +499,7 @@ body{
 .modal-body{ padding: 1rem; }
 .puzzle-content{ line-height:1.5; transition: opacity 0.3s ease; }
 
-.puzzle-actions{ display:flex; gap:1rem; align-items:center; }
+.puzzle-actions{ display:flex; gap:1rem; align-items:center; justify-content:center; }
 .puzzle-input{
   flex:1; padding:0.75rem 1rem; background:rgba(0,0,0,.3);
   border:1px solid rgba(100,180,255,.3); border-radius:8px;
@@ -671,12 +671,12 @@ body{
   border-radius: 8px;
   font-weight: bold;
   min-height: 0;
-  margin-top: 0.5rem;
   background-color: transparent;
   font-family: 'Orbitron', sans-serif;
   font-size: 0.9rem;
   letter-spacing: 1px;
   display: none;
+  margin: 0.5rem 0;
 }
 
 .puzzle-feedback.show {
@@ -694,10 +694,13 @@ body{
 }
 
 .confirm-puzzle-btn {
-  margin-top: 10px;
   padding: 8px 16px;
   width: 100%;
   font-size: 14px;
+}
+
+.chair-puzzle-container .confirm-puzzle-btn {
+  margin-top: 0.5rem;
 }
 
 .chair-item.placed { 
@@ -749,8 +752,12 @@ body{
 /* Cabinet Puzzle Styles */
 .cabinet-puzzle-container .puzzle-feedback {
   min-height: 0;
-  margin-top: 0.5rem;
   padding: 0;
+}
+
+.cabinet-puzzle-container .puzzle-feedback.hint-message {
+  margin-top: 1rem;
+  margin-bottom: 0;
 }
 
 .cabinet-lock {
@@ -977,17 +984,24 @@ body{
 }
 
 /* Mirror Puzzle Styles */
-.mirror-puzzle-container .puzzle-feedback {
-  max-width: 200px;
-  margin-left: auto;
-  margin-right: auto;
+#flippedPaperHint {
+  display: none;
+}
+
+#flippedPaperHint > p {
+  font-size: 0.75rem;
+  text-align: center;
+}
+
+.paper-image.flipped {
+  transform: scaleX(-1);
 }
 
 .mirror-puzzle {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.75rem;
+  gap: 1.1rem;
 }
 
 .mirror-image-container {
@@ -1021,16 +1035,16 @@ body{
 
 .mirror-input-area {
   width: 100%;
-  margin-top: 0.25rem;
+  display: flex;
+  justify-content: center;
 }
 
 .mirror-code-input {
   width: 100%;
-  max-width: min(220px, 28vw);
-  padding: 8px 8px;
+  max-width: min(170px, 35vw);
+  padding: 8px;
   font-size: min(1.2rem, 4.5vw);
   text-align: center;
-  letter-spacing: 0;
   background: rgba(16, 32, 51, 0.6);
   border: 2px solid rgba(100, 180, 255, 0.3);
   border-radius: 6px;

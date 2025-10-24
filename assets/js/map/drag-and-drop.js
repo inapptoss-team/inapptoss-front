@@ -83,7 +83,7 @@ export function makeDraggable(element, puzzleManager, options = {}) {
             if (hasDragged) { // A true drag occurred
                 if (dropTarget && isOverlapping(element, dropTarget)) {
                     // Successful drop on target
-                    puzzleManager.show(options.dropPuzzleId);
+                    puzzleManager.show(options.dropPuzzleId, '거울', { fromDrop: true });
                     // Reset position to where drag started from
                     element.style.left = startX;
                     element.style.top = startY;
