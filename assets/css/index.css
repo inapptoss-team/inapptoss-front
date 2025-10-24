@@ -1126,6 +1126,7 @@ body{
   cursor: pointer;
   transition: all 0.15s ease;
   font-family: 'Poppins', sans-serif;
+  white-space: nowrap;
 }
 
 .start-game-btn:active {
