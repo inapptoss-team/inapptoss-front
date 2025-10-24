@@ -17,9 +17,8 @@ export function makeDraggable(element, puzzleManager, options = {}) {
     let offsetX, offsetY;
     let hasDragged = false;
     let startX, startY;
-    let startClientX, startClientY; // For threshold check
+    let startClientX, startClientY;
 
-    // 로컬 스토리지에서 위치 불러오기
     const savedPos = puzzleManager.getDraggablePosition(element.dataset.puzzle);
     if (savedPos) {
         element.style.left = savedPos.x;
@@ -28,12 +27,11 @@ export function makeDraggable(element, puzzleManager, options = {}) {
 
     element.addEventListener('mousedown', (e) => {
         isDragging = true;
-        hasDragged = false; // Reset on every mousedown
+        hasDragged = false;
         
         offsetX = e.clientX - element.offsetLeft;
         offsetY = e.clientY - element.offsetTop;
         
-        // Store initial positions for threshold check and position reset
         startClientX = e.clientX;
         startClientY = e.clientY;
         startX = element.style.left;
@@ -45,16 +43,14 @@ export function makeDraggable(element, puzzleManager, options = {}) {
     document.addEventListener('mousemove', (e) => {
         if (!isDragging) return;
 
-        // Only set hasDragged to true if the mouse has moved beyond a certain threshold
         if (!hasDragged) {
             const dx = Math.abs(e.clientX - startClientX);
             const dy = Math.abs(e.clientY - startClientY);
-            if (dx > 5 || dy > 5) { // 5px threshold
+            if (dx > 5 || dy > 5) {
                 hasDragged = true;
             }
         }
         
-        // Only move the element if it's considered a drag
         if (hasDragged) {
             e.preventDefault();
 
@@ -65,7 +61,6 @@ export function makeDraggable(element, puzzleManager, options = {}) {
             const mapRect = mapContainer.getBoundingClientRect();
             const elementRect = element.getBoundingClientRect();
 
-            // Ensure the element stays within the map container
             if (newX < 0) newX = 0;
             if (newY < 0) newY = 0;
             if (newX + elementRect.width > mapRect.width) newX = mapRect.width - elementRect.height;
@@ -76,19 +71,25 @@ export function makeDraggable(element, puzzleManager, options = {}) {
         }
     });
 
-    document.addEventListener('mouseup', () => {
+    document.addEventListener('mouseup', (e) => {
         if (isDragging) {
             const dropTarget = options.dropTarget ? document.querySelector(options.dropTarget) : null;
 
-            if (hasDragged) { // A true drag occurred
-                if (dropTarget && isOverlapping(element, dropTarget)) {
-                    // Successful drop on target
+            if (hasDragged) {
+                let isDroppedOnTarget = false;
+                
+                if (dropTarget && dropTarget.tagName === 'path') {
+                    const elementsAtPoint = document.elementsFromPoint(e.clientX, e.clientY);
+                    isDroppedOnTarget = elementsAtPoint.includes(dropTarget);
+                } else if (dropTarget) {
+                    isDroppedOnTarget = isOverlapping(element, dropTarget);
+                }
+                
+                if (isDroppedOnTarget) {
                     puzzleManager.show(options.dropPuzzleId, '거울', { fromDrop: true });
-                    // Reset position to where drag started from
                     element.style.left = startX;
                     element.style.top = startY;
                 } else {
-                    // Dragged and dropped somewhere else, save new position
                     puzzleManager.saveDraggablePosition(element.dataset.puzzle, {
                         x: element.style.left,
                         y: element.style.top
@@ -104,6 +105,9 @@ export function makeDraggable(element, puzzleManager, options = {}) {
     element.addEventListener('click', (e) => {
         if (hasDragged) {
             e.stopPropagation();
+        } else if (options.onClick) {
+            e.stopPropagation();
+            options.onClick();
         }
-    }, true); // Use capture phase to stop click event before it bubbles up
+    }, true);
 }

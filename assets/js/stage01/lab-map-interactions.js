@@ -21,7 +21,6 @@ document.addEventListener('DOMContentLoaded', () => {
     setupInteraction('.map-mirror', 'mirror-puzzle');
     setupInteraction('.map-storage', 'storage-clue');
     setupInteraction('.map-cabinet', 'cabinet-puzzle');
-    setupInteraction('.map-paper', 'paper-clue');
     setupInteraction('.map-periodic-table', 'periodic-table-clue');
 
     if (window.puzzleManager) {
@@ -31,7 +30,11 @@ document.addEventListener('DOMContentLoaded', () => {
         if (progress.completedPuzzles.includes('cabinet-puzzle')) {
             if (paperElement) {
                 paperElement.style.display = 'block';
-                makeDraggable(paperElement, window.puzzleManager, { dropTarget: '.map-mirror', dropPuzzleId: 'mirror-puzzle' });
+                makeDraggable(paperElement, window.puzzleManager, { 
+                    dropTarget: '.mirror-shape', 
+                    dropPuzzleId: 'mirror-puzzle',
+                    onClick: () => loadHtmlPuzzle('paper-clue')
+                });
             }
         }
     }
