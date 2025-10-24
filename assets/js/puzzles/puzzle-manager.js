@@ -278,11 +278,12 @@ class PuzzleManager {
             const paperElement = document.querySelector('.map-paper');
             if (paperElement) {
                 paperElement.style.display = 'block';
-                makeDraggable(paperElement, this, { dropTarget: '.map-mirror', dropPuzzleId: 'mirror-puzzle' });
             }
             this.completePuzzle('cabinet-puzzle');
         } else if (sceneType === 'mirror-unlocked') {
             this.hide();
+            
+            sessionStorage.setItem('justCompletedMirror', 'true');
             
             showStageClearAnimation(
                 '../img/학사복도.png',

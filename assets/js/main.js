@@ -69,19 +69,41 @@ document.addEventListener('DOMContentLoaded', () => {
   const progress = puzzleManager.loadProgress();
   if (progress.completedPuzzles.includes('mirror-puzzle')) {
     const stageButtons = document.querySelectorAll('.stage-item .btn');
+    const justCompleted = sessionStorage.getItem('justCompletedMirror') === 'true';
+    
     stageButtons.forEach((btn) => {
       if (btn.textContent.trim() === '학사') {
-        btn.classList.remove('locked');
-        btn.removeAttribute('data-locked');
-        btn.classList.add('active', 'explore-btn');
-        
-        const newBtn = btn.cloneNode(true);
-        btn.parentNode.replaceChild(newBtn, btn);
-        
-        newBtn.addEventListener('click', (e) => {
-          e.preventDefault();
-          showComingSoonModal('학사 스테이지는 준비 중입니다.');
-        });
+        if (justCompleted) {
+          sessionStorage.removeItem('justCompletedMirror');
+          
+          btn.classList.add('unlocking');
+          
+          setTimeout(() => {
+            btn.classList.remove('locked', 'unlocking');
+            btn.removeAttribute('data-locked');
+            btn.classList.add('active', 'explore-btn');
+            
+            const newBtn = btn.cloneNode(true);
+            btn.parentNode.replaceChild(newBtn, btn);
+            
+            newBtn.addEventListener('click', (e) => {
+              e.preventDefault();
+              showComingSoonModal('학사 스테이지는 준비 중입니다.');
+            });
+          }, 2000);
+        } else {
+          btn.classList.remove('locked');
+          btn.removeAttribute('data-locked');
+          btn.classList.add('active', 'explore-btn');
+          
+          const newBtn = btn.cloneNode(true);
+          btn.parentNode.replaceChild(newBtn, btn);
+          
+          newBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            showComingSoonModal('학사 스테이지는 준비 중입니다.');
+          });
+        }
       }
     });
   }

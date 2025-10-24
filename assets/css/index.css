@@ -180,6 +180,23 @@ body{
   margin-left:.5em;
   filter:grayscale(1);
 }
+
+.btn.locked.unlocking:after{
+  content:"\1F512"; /* lock emoji */
+  margin-left:.5em;
+  filter:grayscale(1);
+  animation: lockFade 2s ease-in-out forwards;
+}
+
+@keyframes lockFade {
+  0%, 80% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
 .btn.blurred{
   opacity:.55;
   filter: blur(.2px) grayscale(.25);
@@ -194,6 +211,81 @@ body{
   0%, 100% { transform: translateX(0); }
   25% { transform: translateX(-5px); }
   75% { transform: translateX(5px); }
+}
+
+.btn.unlocking {
+  animation: unlockShine 2s ease-in-out, unlockColorChange 2s ease-in-out;
+  position: relative;
+  overflow: hidden;
+  cursor: wait;
+}
+
+@keyframes unlockShine {
+  0% {
+    box-shadow: 0 0 5px rgba(100, 180, 255, 0.3);
+  }
+  15% {
+    box-shadow: 0 0 20px rgba(100, 180, 255, 0.6), 0 0 40px rgba(100, 180, 255, 0.4);
+  }
+  30% {
+    box-shadow: 0 0 30px rgba(100, 180, 255, 0.8), 0 0 60px rgba(100, 180, 255, 0.6), 0 0 80px rgba(100, 180, 255, 0.4);
+    border-color: rgba(100, 180, 255, 0.8);
+  }
+  45% {
+    box-shadow: 0 0 20px rgba(100, 180, 255, 0.6), 0 0 40px rgba(100, 180, 255, 0.4);
+  }
+  60% {
+    box-shadow: 0 0 30px rgba(100, 180, 255, 0.8), 0 0 60px rgba(100, 180, 255, 0.6), 0 0 80px rgba(100, 180, 255, 0.4);
+    border-color: rgba(100, 180, 255, 0.8);
+  }
+  75% {
+    box-shadow: 0 0 20px rgba(100, 180, 255, 0.6), 0 0 40px rgba(100, 180, 255, 0.4);
+  }
+  85% {
+    box-shadow: 0 0 16px rgba(80, 140, 255, 0.35), 0 8px 28px rgba(0, 0, 0, 0.6);
+    border-color: rgba(120, 170, 255, 0.6);
+  }
+  100% {
+    box-shadow: 0 0 16px rgba(80, 140, 255, 0.35), 0 8px 28px rgba(0, 0, 0, 0.6);
+    border-color: rgba(120, 170, 255, 0.6);
+  }
+}
+
+@keyframes unlockColorChange {
+  0%, 70% {
+    color: #8a909b;
+  }
+  100% {
+    color: #d6e6ff;
+  }
+}
+
+.btn.unlocking:before {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.3),
+    transparent
+  );
+  animation: unlockSweep 2s ease-in-out;
+}
+
+@keyframes unlockSweep {
+  0% {
+    transform: translateX(-100%) rotate(45deg);
+  }
+  30%, 60% {
+    transform: translateX(100%) rotate(45deg);
+  }
+  100% {
+    transform: translateX(100%) rotate(45deg);
+  }
 }
 
 /* Vignette & cinematic bars for poster feel */
@@ -360,7 +452,7 @@ body{
   margin-top: 1rem;
 }
 
-.map-mirror:hover::before {
+.map-mirror:hover .mirror-shape {
   transform: scale(1.1);
   filter: drop-shadow(0 0 10px rgba(0, 255, 0, 0.6));
 }
@@ -378,19 +470,14 @@ body{
   pointer-events: none;
 }
 
-.map-mirror::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath d='M 10,0 L 90,-75 L 90,75 L 10,180 Z' fill='rgba(95, 128, 145, 0.6)' stroke='%235f8091' stroke-width='2' stroke-linejoin='round'/%3E%3C/svg%3E");
-  background-size: 100% 100%;
-  background-repeat: no-repeat;
-  background-position: center;
-  transition: transform 0.3s ease;
+.map-mirror svg {
   pointer-events: none;
+}
+
+.map-mirror .mirror-shape {
+  pointer-events: auto;
+  transition: transform 0.3s ease;
+  cursor: pointer;
 }
 
 .map-storage {
