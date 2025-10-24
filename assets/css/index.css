@@ -439,7 +439,8 @@ body{
 
 .map-storage:hover,
 .map-desk:hover,
-.map-paper:hover {
+.map-paper:hover,
+.map-periodic-table:hover {
   transform: scale(1.05);
   box-shadow: 0 0 20px rgba(0, 255, 0, 0.4);
 }
@@ -452,14 +453,22 @@ body{
   margin-top: 1rem;
 }
 
-.map-mirror:hover .mirror-shape {
-  transform: scale(1.1);
-  filter: drop-shadow(0 0 10px rgba(0, 255, 0, 0.6));
+.map-mirror:hover {
+  transform: scale(1.05);
 }
 
-.map-cabinet:hover::before {
-  transform: scale(1.1);
-  filter: drop-shadow(0 0 10px rgba(0, 255, 0, 0.6));
+.map-mirror:hover .mirror-glow {
+  stroke: rgba(0, 255, 0, 0.4);
+  stroke-width: 15;
+}
+
+.map-cabinet:hover {
+  transform: scale(1.05);
+}
+
+.map-cabinet:hover .cabinet-glow {
+  stroke: rgba(0, 255, 0, 0.4);
+  stroke-width: 15;
 }
 
 /* Object positions on the map */
@@ -468,6 +477,7 @@ body{
   border: none;
   position: relative;
   pointer-events: none;
+  transition: all 0.3s ease;
 }
 
 .map-mirror svg {
@@ -476,8 +486,12 @@ body{
 
 .map-mirror .mirror-shape {
   pointer-events: auto;
-  transition: transform 0.3s ease;
   cursor: pointer;
+}
+
+.map-mirror .mirror-glow {
+  pointer-events: none;
+  transition: all 0.3s ease;
 }
 
 .map-storage {
@@ -491,28 +505,28 @@ body{
   bottom: 3%; right: 0%; width: 73%; height: 42%;
   background-color: rgba(95, 128, 145, 0.4);
   border: 2px solid #5f8091;
-  border-radius: 8px;
+  border-radius: 100px 55px 70px 100px;
 }
 
 .map-cabinet {
   bottom: 15%; left: 12%; width: 13%; height: 35%;
   position: relative;
   pointer-events: none;
+  transition: all 0.3s ease;
 }
 
-.map-cabinet::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpolygon points='0,20 90,-190 90,30 0,300' fill='rgba(95, 128, 145, 0.6)' stroke='%235f8091' stroke-width='2'/%3E%3C/svg%3E");
-  background-size: 100% 100%;
-  background-repeat: no-repeat;
-  background-position: center;
-  transition: transform 0.3s ease;
+.map-cabinet svg {
   pointer-events: none;
+}
+
+.map-cabinet .cabinet-shape {
+  pointer-events: auto;
+  cursor: pointer;
+}
+
+.map-cabinet .cabinet-glow {
+  pointer-events: none;
+  transition: all 0.3s ease;
 }
 
 .map-periodic-table {
