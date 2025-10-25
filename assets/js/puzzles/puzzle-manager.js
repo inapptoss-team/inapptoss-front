@@ -36,7 +36,7 @@ class PuzzleManager {
         } = options;
     
         this.modalTitle.textContent = title;
-        this.puzzleContent.innerHTML = `<p>${message}</p>`;
+        this.puzzleContent.innerHTML = `<p style="text-align: center;">${message}</p>`;
         this.puzzleInput.style.display = 'none';
         this.submitBtn.style.display = 'inline-block';
         this.submitBtn.textContent = confirmText;
@@ -59,7 +59,7 @@ class PuzzleManager {
                 cancelBtn.remove();
             }
             document.removeEventListener('keydown', keydownHandler);
-            this.attachEventListeners(); // Re-attach original listeners
+            this.attachEventListeners();
         };
 
         const confirmHandler = () => {
@@ -138,25 +138,33 @@ class PuzzleManager {
 
         if (puzzleId === 'mirror-puzzle' && !options.forceShow) {
             const isPaperAvailable = this.currentProgress.completedPuzzles.includes('cabinet-puzzle');
-            if (!isPaperAvailable) {
-                this.showLockedWithHandler(puzzleId);
-                return;
-            }
             const isSolved = this.currentProgress.completedPuzzles.includes(puzzleId);
-            if(isSolved){
-                this.show(puzzleId, objectName, { forceShow: true });
+            const paperUsed = localStorage.getItem('mirror-paper-used') === 'true';
+            
+            if (options.fromDrop) {
+                if (!isPaperAvailable) {
+                    this.showLockedWithHandler(puzzleId);
+                    return;
+                }
+                if(isSolved){
+                    this.show(puzzleId, objectName, { forceShow: true });
+                    return;
+                }
+
+                this.showConfirmation({
+                    title: '거울',
+                    message: '종이를 거울에 비추시겠습니까?',
+                    confirmText: '확인',
+                    cancelText: '취소',
+                    onConfirm: () => {
+                        localStorage.setItem('mirror-paper-used', 'true');
+                        this.show(puzzleId, objectName, { forceShow: true, usePaper: true });
+                    }
+                });
                 return;
             }
-
-            this.showConfirmation({
-                title: '거울',
-                message: '종이를 거울에 비추시겠습니까?',
-                confirmText: '확인',
-                cancelText: '취소',
-                onConfirm: () => {
-                    this.show(puzzleId, objectName, { forceShow: true, usePaper: true });
-                }
-            });
+            
+            this.show(puzzleId, objectName, { forceShow: true, usePaper: paperUsed });
             return;
         }
 
@@ -202,16 +210,12 @@ class PuzzleManager {
                  this.loadHtmlPuzzle('../puzzles/clue02.html', '.paper-clue-container', objectName, () => {
                      this.completePuzzle('paper-clue');
                  }, false);
-            } else if (puzzle.type === 'image-clue') {
-                modalContent.classList.add('image-clue-modal-style');
-                this.puzzleContent.innerHTML = `
-                    <p class="image-clue-question">${puzzle.question}</p>
-                    <div class="image-clue-container">
-                        <img src="${puzzle.imageUrl}" alt="${puzzle.title}" class="clue-image">
-                    </div>
-                `;
-                this.puzzleInput.style.display = 'none';
-                this.submitBtn.style.display = 'none';
+            } else if (puzzle.type === 'periodic-table-clue') {
+                 this.puzzleInput.style.display = 'none';
+                 this.submitBtn.style.display = 'none';
+                 this.loadHtmlPuzzle('../puzzles/clue03.html', '.periodic-table-clue-container', objectName, () => {
+                     this.completePuzzle('periodic-table-clue');
+                 }, false);
             } else {
                 this.puzzleContent.innerHTML = `
                     <p>${puzzle.question}</p>`;
@@ -274,11 +278,17 @@ class PuzzleManager {
             const paperElement = document.querySelector('.map-paper');
             if (paperElement) {
                 paperElement.style.display = 'block';
-                makeDraggable(paperElement, this, { dropTarget: '.map-mirror', dropPuzzleId: 'mirror-puzzle' });
+                makeDraggable(paperElement, this, { 
+                    dropTarget: '.mirror-shape', 
+                    dropPuzzleId: 'mirror-puzzle',
+                    onClick: () => this.show('paper-clue')
+                });
             }
             this.completePuzzle('cabinet-puzzle');
         } else if (sceneType === 'mirror-unlocked') {
             this.hide();
+            
+            sessionStorage.setItem('justCompletedMirror', 'true');
             
             showStageClearAnimation(
                 '../img/학사복도.png',
@@ -700,7 +710,7 @@ class PuzzleManager {
                                 lockImage.src = '../img/부식된자물쇠.png';
                                 lockImage.style.opacity = '1';
                                 feedback.textContent = ` ${puzzle.successMessage}`;
-                                feedback.classList.add('show');
+                                feedback.classList.add('show', 'hint-message');
                                 
                                 this.completePuzzle('cabinet-puzzle');
                             }, 500);
@@ -735,7 +745,17 @@ class PuzzleManager {
             return;
         }
 
+        if (isSolved) {
+            options.usePaper = true;
+        }
+
         if (options.usePaper) {
+            const mirrorTitle = document.querySelector('.mirror-puzzle-container h3');
+            const mirrorDescription = document.querySelector('.mirror-puzzle-container p');
+            
+            if (mirrorTitle) mirrorTitle.textContent = '거울에 비친 종이';
+            if (mirrorDescription) mirrorDescription.textContent = '거울에 비친 종이에는 다음과 같이 적혀있다.';
+            
             const hint = document.getElementById('flippedPaperHint');
             if (hint) {
                 hint.style.display = 'block';
@@ -744,6 +764,9 @@ class PuzzleManager {
             if (mirrorImageContainer) {
                 mirrorImageContainer.style.display = 'none';
             }
+        } else if (options.usePaper === false) {
+            codeInput.style.display = 'none';
+            confirmBtn.style.display = 'none';
         }
 
         const puzzle = puzzles['mirror-puzzle'];
@@ -754,15 +777,16 @@ class PuzzleManager {
             let formattedAnswer = '';
             for (let i = 0; i < answer.length; i++) {
                 if (i > 0) {
-                    formattedAnswer += ' ';
+                    formattedAnswer += '  ';
                 }
                 formattedAnswer += answer[i];
             }
             codeInput.value = formattedAnswer;
             codeInput.disabled = true;
             confirmBtn.style.display = 'none';
-            feedback.textContent = '이미 완료된 퍼즐입니다';
+            feedback.innerHTML = 'STAGE 1 CLEAR<br>실험실을 탈출했습니다!';
             feedback.className = 'puzzle-feedback success show';
+            feedback.style.whiteSpace = 'nowrap';
             return;
         }
 
@@ -773,7 +797,7 @@ class PuzzleManager {
                 let formattedValue = '';
                 for (let i = 0; i < value.length; i++) {
                     if (i > 0 && i < value.length) {
-                        formattedValue += ' ';
+                        formattedValue += '  ';
                     }
                     formattedValue += value[i];
                 }
@@ -811,6 +835,7 @@ class PuzzleManager {
                 feedback.className = 'puzzle-feedback success show';
                 feedback.style.whiteSpace = 'nowrap';
                 codeInput.disabled = true;
+                confirmBtn.style.display = 'none';
                 
                 this.completePuzzle('mirror-puzzle');
                 
@@ -840,7 +865,6 @@ class PuzzleManager {
             currentStep: 0,
             draggablePositions: {}
         };
-        // Ensure draggablePositions exists
         if (!progress.draggablePositions) {
             progress.draggablePositions = {};
         }
@@ -912,8 +936,23 @@ class PuzzleManager {
             draggablePositions: {}
         };
         this.saveProgress();
+        localStorage.removeItem('mirror-paper-used');
         console.log('진행 상태가 리셋되었습니다.');
     }
+
+    // 배포 시 삭제
+    skipToMirrorPuzzle() {
+        this.currentProgress = {
+            completedPuzzles: ['chair-puzzle', 'cabinet-puzzle'],
+            currentStep: 4,
+            draggablePositions: {}
+        };
+        this.saveProgress();
+        localStorage.setItem('mirror-paper-used', 'true');
+        console.log('거울 퍼즐 테스트 상태로 설정되었습니다.');
+    }
+    // 배포 시 삭제
+    
 
     getProgress() {
         console.log('현재 진행 상태:', this.currentProgress);
