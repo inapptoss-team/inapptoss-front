@@ -938,7 +938,21 @@ class PuzzleManager {
         this.saveProgress();
         localStorage.removeItem('mirror-paper-used');
         console.log('진행 상태가 리셋되었습니다.');
-    }    
+    }
+
+    // 배포 시 삭제
+    skipToMirrorPuzzle() {
+        this.currentProgress = {
+            completedPuzzles: ['chair-puzzle', 'cabinet-puzzle'],
+            currentStep: 4,
+            draggablePositions: {}
+        };
+        this.saveProgress();
+        localStorage.setItem('mirror-paper-used', 'true');
+        console.log('거울 퍼즐 테스트 상태로 설정되었습니다.');
+    }
+    // 배포 시 삭제
+    
 
     getProgress() {
         console.log('현재 진행 상태:', this.currentProgress);
