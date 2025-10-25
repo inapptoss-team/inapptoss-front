@@ -278,6 +278,11 @@ class PuzzleManager {
             const paperElement = document.querySelector('.map-paper');
             if (paperElement) {
                 paperElement.style.display = 'block';
+                makeDraggable(paperElement, this, { 
+                    dropTarget: '.mirror-shape', 
+                    dropPuzzleId: 'mirror-puzzle',
+                    onClick: () => this.show('paper-clue')
+                });
             }
             this.completePuzzle('cabinet-puzzle');
         } else if (sceneType === 'mirror-unlocked') {
@@ -933,7 +938,7 @@ class PuzzleManager {
         this.saveProgress();
         localStorage.removeItem('mirror-paper-used');
         console.log('진행 상태가 리셋되었습니다.');
-    }
+    }    
 
     getProgress() {
         console.log('현재 진행 상태:', this.currentProgress);

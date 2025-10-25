@@ -36,6 +36,10 @@ document.addEventListener('DOMContentLoaded', () => {
                     onClick: () => loadHtmlPuzzle('paper-clue')
                 });
             }
+        } else {
+            if (paperElement) {
+                paperElement.style.display = 'none';
+            }
         }
     }
 });
